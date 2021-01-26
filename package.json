@@ -21,7 +21,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "f2elint exec commitlint -E HUSKY_GIT_PARAMS",
+      "commit-msg": "echo $HUSKY_GIT_PARAMS ssss",
       "pre-commit": "f2elint exec lint-staged"
     }
   },
