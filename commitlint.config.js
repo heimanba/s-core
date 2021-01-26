@@ -1,6 +1,6 @@
 module.exports = {
   extends: ['ali'],
   ignores: [
-    (message) => message === 'Publish',
+    (message) => message.includes('Publish'),
   ],
 };
