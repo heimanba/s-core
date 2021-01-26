@@ -19,8 +19,8 @@
   },
   "homepage": "https://www.serverless-devs.com",
   "scripts": {
-    "publish": "lerna",
     "test": "npx jest",
+    "build": "npx tsc -w",
     "test:cov": "jest --coverage",
     "lint": "npm run typecheck && f2elint scan -i src",
     "fix": "f2elint fix",

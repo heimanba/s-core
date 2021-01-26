@@ -1,2 +1,5 @@
+import { Logger } from './logger/index';
+
 export { Component } from './component/index';
-export { Logger } from './logger/index';
+
+export const Log = Logger;

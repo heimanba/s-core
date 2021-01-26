@@ -1,16 +1,18 @@
 import download, { DownloadOptions as MyDownloadOptions } from 'download';
-import got, { GotOptions } from 'got';
+import got, { GotJSONOptions } from 'got';
 
 import { ProgressService, ProgressType, ProgressBarOptions } from '@serverless-devs/s-progress-bar';
 
 import { green } from 'colors';
 
-export interface requestOptions extends GotOptions<string> {
-  searchParams: any;
+// @ts-ignore
+export interface requestOptions extends GotJSONOptions {
+  json?: boolean;
 }
+
 export type DownloadOptions = MyDownloadOptions;
 
-const defaultOptions = { responseType: 'json' };
+const defaultOptions = { json: true };
 
 export async function request(url: string, options?: requestOptions): Promise<any> {
   // @ts-ignore
@@ -30,6 +32,7 @@ export async function request(url: string, options?: requestOptions): Promise<an
 export async function downloadRequest(url, dest, options: MyDownloadOptions) {
   console.log('prepare downloading');
   let len;
+  // TODO: add loading
   try {
     const { headers } = await got(url);
     len = parseInt(headers['content-length'], 10);
