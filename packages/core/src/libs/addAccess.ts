@@ -1,10 +1,5 @@
 /** @format */
 
-const path = require('path');
-const os = require('os');
-const inquirer = require('inquirer');
-const fs = require('fs');
-const yaml = require('js-yaml');
 import * as program from 'commander';
 import {
   providerArray,
@@ -14,6 +9,12 @@ import {
   checkProviderList,
 } from './commonAccess';
 
+const path = require('path');
+const os = require('os');
+const inquirer = require('inquirer');
+const fs = require('fs');
+const yaml = require('js-yaml');
+
 function isEqualArray(rightFormat: string[], inputFormat: string[]): boolean {
   if (!(rightFormat || inputFormat)) {
     return false;
@@ -21,7 +22,7 @@ function isEqualArray(rightFormat: string[], inputFormat: string[]): boolean {
   if (rightFormat.length !== inputFormat.length) {
     return false;
   }
-  rightFormat.forEach(item => {
+  rightFormat.forEach((item) => {
     if (!inputFormat.includes(item)) {
       return false;
     }
@@ -43,6 +44,7 @@ export class AddManager {
   protected promptList: any[];
   protected isRightFormat = true;
   protected context: string[];
+
   constructor() {
     this.globalFilePath = path.join(os.homedir(), '.s/access.yaml');
     this.inputFullData = {};
@@ -52,30 +54,28 @@ export class AddManager {
   async init(inputProviderAndAlisName: any, inputSecretCheck: any) {
     if (program.args.length > 0) {
       throw Error('Configuration failed');
-    } else {
-      if (inputProviderAndAlisName.Provider) {
-        this.provider = String(inputProviderAndAlisName.Provider).toLocaleLowerCase();
-        this.aliasName = String(inputProviderAndAlisName.AliasName || 'default').toLocaleLowerCase();
-        if (providerArray.indexOf(this.provider) === -1) {
-          throw Error(`The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent]`);
-        }
+    } else if (inputProviderAndAlisName.Provider) {
+      this.provider = String(inputProviderAndAlisName.Provider).toLocaleLowerCase();
+      this.aliasName = String(inputProviderAndAlisName.AliasName || 'default').toLocaleLowerCase();
+      if (providerArray.indexOf(this.provider) === -1) {
+        throw Error(`The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent]`);
+      }
 
-        this.inputSecretID = {};
-        const inputSecretCheckKeys: string[] = Object.keys(inputSecretCheck); // 用户输入的秘钥对象的key
+      this.inputSecretID = {};
+      const inputSecretCheckKeys: string[] = Object.keys(inputSecretCheck); // 用户输入的秘钥对象的key
 
-        //正确秘钥形式
-        const providerAccessFormatSecret: string[] = providerAccessFormat[this.provider];
-        //检查用户输入的秘钥的格式与对应云厂商的格式是否相同
-        if (isEqualArray(providerAccessFormatSecret, inputSecretCheckKeys)) {
-          for (const item of inputSecretCheckKeys) {
-            this.inputSecretID[item] = inputSecretCheck[item];
-          }
-        } else {
-          throw new Error(`Please Input Right Secret Format: [${providerAccessFormatSecret}]`);
+      // 正确秘钥形式
+      const providerAccessFormatSecret: string[] = providerAccessFormat[this.provider];
+      // 检查用户输入的秘钥的格式与对应云厂商的格式是否相同
+      if (isEqualArray(providerAccessFormatSecret, inputSecretCheckKeys)) {
+        for (const item of inputSecretCheckKeys) {
+          this.inputSecretID[item] = inputSecretCheck[item];
         }
       } else {
-        await this.inputLengthZero();
+        throw new Error(`Please Input Right Secret Format: [${providerAccessFormatSecret}]`);
       }
+    } else {
+      await this.inputLengthZero();
     }
 
     await this.checkInputSecretID();
@@ -100,11 +100,9 @@ export class AddManager {
   // 用户输入参数为0的时候
   async inputLengthZero(provider: any = undefined) {
     if (!provider) {
-      {
-        await inquirer.prompt(checkProviderList).then((answers: any) => {
-          this.provider = answers.provider;
-        });
-      }
+      await inquirer.prompt(checkProviderList).then((answers: any) => {
+        this.provider = answers.provider;
+      });
     } else {
       this.provider = provider.toLocaleLowerCase();
     }
@@ -114,7 +112,7 @@ export class AddManager {
     }
 
     try {
-      Object.keys(providerCollection).forEach(item => {
+      Object.keys(providerCollection).forEach((item) => {
         if (item === this.provider) {
           this.promptList = providerCollection[item];
         }
@@ -132,13 +130,13 @@ export class AddManager {
       this.inputSecretID = answers;
     });
 
-    Object.keys(this.inputSecretID).forEach(item => {
+    Object.keys(this.inputSecretID).forEach((item) => {
       if (item === 'aliasName') {
         this.aliasName = this.inputSecretID[item];
         delete this.inputSecretID[item];
       }
     });
-    this.inputProviderAlias = this.provider + '.' + this.aliasName || 'default';
+    this.inputProviderAlias = `${this.provider}.${this.aliasName}` || 'default';
     return this.inputSecretID;
   }
 
@@ -147,10 +145,8 @@ export class AddManager {
     // eslint-disable-next-line guard-for-in
     for (const item in this.inputSecretID) {
       const isTrue: boolean = String(typeof this.inputSecretID[item]) === 'string';
-      {
-        if (!this.inputSecretID[item] || !isTrue) {
-          throw Error(`The Provider[${providerObject[this.provider]}]: key[${item}] is required.`);
-        }
+      if (!this.inputSecretID[item] || !isTrue) {
+        throw Error(`The Provider[${providerObject[this.provider]}]: key[${item}] is required.`);
       }
     }
   }
@@ -176,7 +172,7 @@ export class AddManager {
       if (userInformation != null) {
         const userProviderAlias: string[] = Object.keys(userInformation);
         const isExistProviderAlias: boolean = userProviderAlias.includes(this.inputProviderAlias);
-        //全局配置是否含有用户输入的provider.alias
+        // 全局配置是否含有用户输入的provider.alias
         if (isExistProviderAlias) {
           throw Error(`Provider + Alias already exists. You can set a different alias or modify it through: s config update -p ${this.provider} -a ${this.aliasName || 'default'}`);
         } else {
