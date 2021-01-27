@@ -4,7 +4,8 @@
   "description": "Serverless Devs Tool Core Component",
   "keywords": [
     "Serverless",
-    "Serverless-Devs"
+    "Serverless-Devs",
+    "Serverless-Core"
   ],
   "publishConfig": {
     "access": "public"
