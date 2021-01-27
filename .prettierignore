@@ -2,6 +2,7 @@
 !packages/scope-manager/test/fixtures/**/*
 **/test/fixture/**/*
 **/dist
+**/lib
 **/coverage
 **/shared-fixtures
 **/.vscode

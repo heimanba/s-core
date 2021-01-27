@@ -1,121 +1,101 @@
 import { isObject } from '../libs/utils';
-import { clc, yellow } from './cli-colors.util';
-import { ILogger } from '../interface';
+// import { clc } from '../libs/colors.util';
+import colors from 'colors';
+import { printMessage, printStackTrace } from './logger.service';
 
-export type LogLevel = 'log' | 'error' | 'warn' | 'debug' | 'verbose';
+export type LogLevel = 'print' | 'info' | 'debug' | 'warn' | 'error' | 'report';
 
-export class Logger {
+export interface ILogger {
+  // 打印
+  print: (message: any, options?: LoggerOptions) => any;
+  // 当成日志
+  info: (message: any, options?: LoggerOptions) => any;
+  debug?: (message: any, options?: LoggerOptions) => any;
+  warn: (message: any, options?: LoggerOptions) => any;
+  error: (message: any, options?: LoggerOptions) => any;
+  // 错误上报 1. 打印ERROR 2. 异常上报
+  report?: (message: any, options?: LoggerOptions) => any;
+}
+
+export interface LoggerOptions {
+  context?: string;
+  color?: 'green' | 'yellow' | 'red' | 'cyan';
+  level?: string;
+  trace?: string;
+}
+
+
+export class Logger implements ILogger {
   protected static instance?: typeof Logger | ILogger = Logger;
-  private static logLevels: LogLevel[] = ['log', 'error', 'warn', 'debug', 'verbose'];
-  private static lastTimestamp?: number;
 
-  static overrideLogger(logger: ILogger | LogLevel[] | boolean) {
-    if (Array.isArray(logger)) {
-      this.logLevels = logger;
-      return;
-    }
+  static overrideLogger(logger: ILogger | boolean) {
     this.instance = isObject(logger) ? (logger as ILogger) : undefined;
   }
 
-  static log(message: any, context = '', isTimeDiffEnabled = true) {
-    this.printMessage(message, clc.green, context, isTimeDiffEnabled);
+  static print(message: any, options: LoggerOptions = {}) {
+    const { color } = options;
+    process.stdout.write(color ? colors[color](message) : message);
   }
 
-  static error(message: any, trace = '', context = '', isTimeDiffEnabled = true) {
-    this.printMessage(message, clc.red, context, isTimeDiffEnabled, 'stderr');
-    this.printStackTrace(trace);
+  static report(message: any, options: LoggerOptions = {}) {
+    const { context, level } = options;
+    printMessage({ lable: 'report', level, message, color: colors.green, context });
   }
 
-  static warn(message: any, context = '', isTimeDiffEnabled = true) {
-    this.printMessage(message, clc.yellow, context, isTimeDiffEnabled);
+  static info(message: any, options: LoggerOptions = {}) {
+    const { context, level } = options;
+    printMessage({ lable: 'info', level, message, color: colors.green, context });
   }
 
-  static debug(message: any, context = '', isTimeDiffEnabled = true) {
-    this.printMessage(message, clc.magentaBright, context, isTimeDiffEnabled);
+  static error(message: any, options: LoggerOptions = {}) {
+    const { context, trace, level } = options;
+    printMessage({ lable: 'error', level, message, color: colors.red, context, writeStreamType: 'stderr' });
+    printStackTrace(trace);
   }
 
-  static verbose(message: any, context = '', isTimeDiffEnabled = true) {
-    this.printMessage(message, clc.cyanBright, context, isTimeDiffEnabled);
+  static warn(message: any, options: LoggerOptions = {}) {
+    const { context, level } = options;
+    printMessage({ lable: 'warn', level, message, color: colors.yellow, context });
   }
 
-  static getTimestamp() {
-    const localeStringOptions = {
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      day: '2-digit',
-      month: '2-digit',
-    };
-    return new Date(Date.now()).toLocaleString(undefined, localeStringOptions);
+  static debug(message: any, options: LoggerOptions = {}) {
+    const { context, level } = options;
+    printMessage({ lable: 'debug', level, message, color: colors.magenta, context });
   }
 
-  private static printMessage(
-    message: any,
-    color: (message: string) => string,
-    context = '',
-    isTimeDiffEnabled?: boolean,
-    writeStreamType?: 'stdout' | 'stderr',
-  ) {
-    const output = isObject(message)
-      ? `${color('Object:')}\n${JSON.stringify(message, null, 2)}\n`
-      : color(message);
 
-    const pidMessage = color(`[S] ${process.pid}   - `);
-    const contextMessage = context ? yellow(`[${context}] `) : '';
-    const timestampDiff = this.updateAndGetTimestampDiff(isTimeDiffEnabled);
-    const instance = (this.instance as typeof Logger) ?? Logger;
-    const computedMessage = `${pidMessage}${instance.getTimestamp()}   ${contextMessage}${output}${timestampDiff}\n`;
-
-    process[writeStreamType ?? 'stdout'].write(computedMessage);
+  constructor(protected context?: string) {
   }
 
-  private static updateAndGetTimestampDiff(isTimeDiffEnabled?: boolean): string {
-    const includeTimestamp = Logger.lastTimestamp && isTimeDiffEnabled;
-    const result = includeTimestamp ? yellow(` +${Date.now() - Logger.lastTimestamp}ms`) : '';
-    Logger.lastTimestamp = Date.now();
-    return result;
+  print(message: any, options: LoggerOptions = {}) {
+    this.callFunction('print', message, options);
   }
 
-  private static printStackTrace(trace: string) {
-    if (!trace) {
-      return;
-    }
-    process.stderr.write(`${trace}\n`);
+  report(message: any, options: LoggerOptions = {}) {
+    this.callFunction('report', message, options);
   }
 
-  constructor(protected context?: string, private readonly isTimestampEnabled = false) {}
-
-  error(message: any, trace = '', context?: string) {
-    const instance = this.getInstance();
-    if (!this.isLogLevelEnabled('error')) {
-      return;
-    }
-    instance && instance.error.call(instance, message, trace, context || this.context);
+  info(message: any, options: LoggerOptions = {}) {
+    this.callFunction('info', message, options);
   }
 
-  log(message: any, context?: string) {
-    this.callFunction('log', message, context);
+
+  debug(message: any, options: LoggerOptions = {}) {
+    this.callFunction('debug', message, options);
   }
 
-  warn(message: any, context?: string) {
-    this.callFunction('warn', message, context);
+
+  warn(message: any, options: LoggerOptions = {}) {
+    this.callFunction('warn', message, options);
   }
 
-  debug(message: any, context?: string) {
-    this.callFunction('debug', message, context);
-  }
 
-  verbose(message: any, context?: string) {
-    this.callFunction('verbose', message, context);
+  error(message: any, options: LoggerOptions = {}) {
+    this.callFunction('error', message, options);
   }
 
   setContext(context: string) {
     this.context = context;
-  }
-
-  getTimestamp() {
-    return Logger.getTimestamp();
   }
 
   protected getInstance(): typeof Logger | ILogger {
@@ -123,16 +103,9 @@ export class Logger {
     return instance === this ? Logger : instance;
   }
 
-  private callFunction(name: 'log' | 'warn' | 'debug' | 'verbose', message: any, context?: string) {
-    if (!this.isLogLevelEnabled(name)) {
-      return;
-    }
+  private callFunction(name: LogLevel, message: any, options: LoggerOptions = {}) {
     const instance = this.getInstance();
     const func = instance && (instance as typeof Logger)[name];
-    func && func.call(instance, message, context || this.context, this.isTimestampEnabled);
-  }
-
-  private isLogLevelEnabled(level: LogLevel): boolean {
-    return Logger.logLevels.includes(level);
+    func && func.call(instance, message, options);
   }
 }

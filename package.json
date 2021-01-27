@@ -8,6 +8,11 @@
     "fix": "f2elint fix",
     "typecheck": "npx tsc -p tsconfig.json --noEmit"
   },
+  "config": {
+    "commitizen": {
+      "path": "git-cz"
+    }
+  },
   "devDependencies": {
     "@types/jest": "^26.0.10",
     "@types/node": "^12.12.6",

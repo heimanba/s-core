@@ -2,8 +2,8 @@ import { Log } from '../src/decorators/logger/index';
 import { ILogger } from '../src/interface';
 
 class LoggerDemo {
-  @Log
-  log: ILogger;
+  // @ts-ignore
+  @Log log: ILogger;
 }
 
 describe('logger.test', () => {
