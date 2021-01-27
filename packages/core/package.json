@@ -1,6 +1,6 @@
 {
   "name": "@b-mamba/s-core",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Serverless Devs Tool Core Component",
   "keywords": [
     "Serverless",
@@ -29,9 +29,9 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "colors": "^1.4.0",
-    "@b-mamba/s-progress-bar": "^0.0.1",
+    "@b-mamba/s-progress-bar": "^0.0.2",
     "@serverless-devs/s-zip": "0.0.8",
+    "colors": "^1.4.0",
     "download": "^8.0.0",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
