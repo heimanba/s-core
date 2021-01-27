@@ -1,4 +1,4 @@
-import Component from '../../src/component/index';
+import { Component } from '../../src/component/index';
 
 const input = {
   Args: '',

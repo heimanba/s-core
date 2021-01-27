@@ -17,5 +17,5 @@
     "typeRoots": ["./typings", "./node_modules/@types"]
   },
   "include": ["packages/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.tets.ts"]
+  "exclude": ["node_modules", "dist", "test"]
 }
