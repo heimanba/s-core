@@ -6,7 +6,6 @@ import { IComponentContext } from './context.service';
 
 const { spawnSync } = require('child_process');
 
-
 export interface IComponentPath {
   componentVersion: string;
   componentPath: string;

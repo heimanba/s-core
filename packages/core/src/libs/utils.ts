@@ -69,3 +69,9 @@ export function readJsonFile(filePath: string) {
 export function writeJsonFile(filePath: string, data: any) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
+
+export function sleep(timer: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(true), timer);
+  });
+}

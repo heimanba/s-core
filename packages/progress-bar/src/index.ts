@@ -78,6 +78,7 @@ export class ProgressService {
     // init backward for loading type
     this.backward = false;
 
+    // @ts-ignore
     const pb = new ProgressBar(fmt, opts);
     const loadingChars = ['⣴', '⣆', '⢻', '⢪', '⢫'];
     // set tick callback with loading chars

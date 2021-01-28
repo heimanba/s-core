@@ -1,14 +1,12 @@
-import { Log } from '../../src/decorators/logger/index';
-// import { ILogger } from '../../src/interface';
-
-// import { Logger } from '../../src/logger/index';
+import { Logger } from '../../src/decorators/logger/index';
+import { sleep } from '../../src/libs/utils';
 
 class LoggerDemo {
   // @ts-ignore
-  @Log logger: ILogger;
+  @Logger logger: ILogger;
 
   getDefaultLog() {
-    this.logger.print('abct', { color: 'green' });
+    this.logger.print('abct', { status: 'success' });
   }
 
 
@@ -20,12 +18,27 @@ class LoggerDemo {
   getDefaultLogWithContext() {
     this.logger.error('abct', { context: 'S-CORE' });
   }
+
+  async printSpinner() {
+    this.logger.print('开始执行', { spinner: true, status: 'start' });
+    await sleep(1000);
+    this.logger.print('执行下一步', {
+      spinner: true,
+      status: 'spinning',
+      spinning: {
+        text: 'hhhh',
+        color: 'red',
+      },
+    });
+    await sleep(1000);
+    this.logger.print('执行成功', { spinner: true, status: 'success' });
+  }
 }
 
 const demo = new LoggerDemo();
 demo.getDefaultLog();
-// demo.getDefaultLogObect();
-// demo.getDefaultLogWithContext();
+// demo.printSpinner();
+demo.getDefaultLogWithContext();
 
 // const logger = new Logger();
 // logger.error('dankun');

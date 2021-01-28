@@ -1,7 +1,9 @@
 import { LoggerClass } from './logger.class';
 import { LogProperty } from './logger.property';
 
-export function Log(this: any, ...args: any[]): any {
+export { ILogger } from '../../logger';
+
+export function Logger(this: any, ...args: any[]): any {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const _this = this;
   switch (args.length) {
@@ -13,3 +15,5 @@ export function Log(this: any, ...args: any[]): any {
       return LogProperty.apply(_this, args);
   }
 }
+
+export const Log = Logger;

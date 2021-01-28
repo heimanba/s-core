@@ -11,19 +11,20 @@ import {
 import { execArgs } from './args.services';
 import { credentials } from './credentials.service';
 import { iInputs } from '../interface';
+import { Logger, ILogger } from '../decorators';
 
 const { packTo } = require('@serverless-devs/s-zip');
 
+
 export class Component {
+  state: any;
   protected id: string;
   protected $$context: IComponentContext;
-  state: any;
+  @Logger logger: ILogger;
 
   constructor(id?: string, context?: IComponentContext) {
     this.id = id || uuid();
     this.$$context = context || new ContextService();
-    // context = context || new ContextService();
-    // this.context = { instance: context };
   }
 
   async init() {
@@ -90,6 +91,8 @@ export class Component {
    */
   async load(name: string, componentAlias = '', provider = 'alibaba') {
     const { componentPathRoot } = this.$$context;
+    // TODO: 是否只能使用最新的包
+    this.logger.print('fetch latest component version', { spinner: true, status: 'start' });
     const componentPaths: IComponentPath = await generateComponentPath(
       {
         name,
@@ -98,6 +101,7 @@ export class Component {
       componentPathRoot,
     );
     const { componentPath } = componentPaths;
+    this.logger.print('succeed latest component version', { spinner: true, status: 'success' });
 
     if (!fs.existsSync(componentPaths.lockPath)) {
       await downloadComponent(componentPath, { name, provider });

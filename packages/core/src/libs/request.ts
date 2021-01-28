@@ -34,7 +34,7 @@ export async function downloadRequest(url, dest, options: MyDownloadOptions) {
   let len;
   // TODO: add loading
   try {
-    const { headers } = await got(url);
+    const { headers } = await got(url, { method: 'HEAD' });
     len = parseInt(headers['content-length'], 10);
   } catch (err) {
     // ignore error
