@@ -23,7 +23,10 @@ function getTimestamp() {
 }
 
 enum LOG_LEVEL_ENUM {
-  'info', 'debug', 'warn', 'error', 'print', 'report'
+  'debug',
+  'info',
+  'warn',
+  'error',
 }
 
 export enum STATUS_COLOR {
@@ -33,9 +36,8 @@ export enum STATUS_COLOR {
   success = 'cyan',
   error = 'red',
   warn = 'yellow',
-  info = 'cyan'
+  info = 'cyan',
 }
-
 
 export enum ORA_STATUS {
   start = 'start',
@@ -44,13 +46,13 @@ export enum ORA_STATUS {
   success = 'succeed',
   error = 'fail',
   warn = 'warn',
-  info = 'info'
+  info = 'info',
 }
-
 
 export function printMessage(messageOptions: IPrintMessage) {
   const { level, lable, message, color, context, writeStreamType } = messageOptions;
-  if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && level !== 'report' && level !== 'print') return;
+  const list = ['print', 'report', 'spinner', 'progress'];
+  if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && !list.includes(level)) return;
 
   const output = isObject(message)
     ? `${color('Object:')}\n${JSON.stringify(message, null, 2)}\n`
@@ -60,7 +62,6 @@ export function printMessage(messageOptions: IPrintMessage) {
   const computedMessage = `${pidMessage}${getTimestamp()}   ${contextMessage}${output}\n`;
   process[writeStreamType ?? 'stdout'].write(computedMessage);
 }
-
 
 export function printStackTrace(trace: string) {
   if (!trace) {
