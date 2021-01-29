@@ -3,6 +3,7 @@ import path from 'path';
 import { getComponentVersion, getComponentDownloadUrl, execComponentDownload } from './services';
 import { IComponentParams } from '../interface';
 import { IComponentContext } from './context.service';
+import { Logger } from '../logger/index';
 
 const { spawnSync } = require('child_process');
 
@@ -28,21 +29,30 @@ export const generateComponentPath = async (
   { name, provider }: IComponentParams,
   componentPathRoot: string,
 ): Promise<IComponentPath> => {
-  const Response = await getComponentVersion({ name, provider });
-  const rootPath = `./${name}-${provider}@${Response.Version}`;
+  let version;
+  if (name.indexOf('@') === -1) {
+    Logger.print('fetch latest component version', { spinner: true, status: 'start' });
+    const Response = await getComponentVersion({ name, provider });
+    version = Response.version;
+    Logger.print('succeed latest component version', { spinner: true, status: 'success' });
+  } else {
+    [name, version] = name.split('@');
+  }
+
+  const rootPath = `./${name}-${provider}@${version}`;
 
   // 如果有根路径
   if (componentPathRoot) {
     return {
       componentPath: path.resolve(componentPathRoot, rootPath),
-      componentVersion: Response.Version,
+      componentVersion: version,
       lockPath: path.resolve(componentPathRoot, rootPath, '.s.lock'),
     };
   } else {
     const componentPath = path.resolve(name);
     return {
       componentPath,
-      componentVersion: Response.Version,
+      componentVersion: version,
       lockPath: path.resolve(componentPath, '.s.lock'),
     };
   }
