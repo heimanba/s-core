@@ -1,5 +1,5 @@
 import { isObject } from '../libs/utils';
-import { yellow } from 'colors';
+import chalk from 'chalk';
 
 interface IPrintMessage {
   lable: string;
@@ -54,13 +54,12 @@ export function printMessage(messageOptions: IPrintMessage) {
   const list = ['log', 'report', 'spinner', 'progress'];
   if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && !list.includes(level)) return;
 
-  const output = isObject(message)
-    ? `${color('Object:')}\n${JSON.stringify(message, null, 2)}\n`
-    : color(message);
-  const pidMessage = color(`[${lable.toUpperCase()}] ${process.pid}   - `);
-  const contextMessage = context ? yellow(`[${context}] `) : '';
-  const computedMessage = `${pidMessage}${getTimestamp()}   ${contextMessage}${output}\n`;
-  process[writeStreamType ?? 'stdout'].write(computedMessage);
+  const output = isObject(message) ? `'Object:'\n${JSON.stringify(message, null, 2)}\n` : message;
+  const contextMessage = context ? chalk.yellowBright(`[${context}] `) : '';
+  let computedMessage = `[${getTimestamp()}] [${lable.toUpperCase()}]`;
+  computedMessage = computedMessage.padEnd(30);
+  computedMessage += `${contextMessage} ${process.pid} ${output}\n`;
+  process[writeStreamType ?? 'stdout'].write(color(computedMessage));
 }
 
 export function printStackTrace(trace: string) {

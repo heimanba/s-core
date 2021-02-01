@@ -17,6 +17,9 @@ class LoggerDemo {
 
   getDefaultLogWithContext() {
     this.logger.info('abct', { context: 'S-CORE', level: 'info' });
+    this.logger.error('abct', { context: 'S-CORE', level: 'error' });
+    this.logger.warn('abct', { context: 'S-CORE', level: 'warn' });
+    this.logger.debug('abct', { context: 'S-CORE', level: 'debug' });
   }
 
   print() {
@@ -88,9 +91,9 @@ const demo = new LoggerDemo();
 // demo.print();
 // demo.spinner();
 // demo.progress();
-// demo.getDefaultLogWithContext();
+demo.getDefaultLogWithContext();
 
-demo.report();
+// demo.report();
 
 // const logger = new Logger();
 // logger.error('dankun');
