@@ -1,4 +1,5 @@
-import { isObject } from '../libs/utils';
+import { isObject, isEmpty } from '../libs/utils';
+import { request } from '../libs/request';
 import chalk from 'chalk';
 import ora from 'ora';
 import ProgressBar from 'progress';
@@ -23,7 +24,7 @@ export interface ILogger {
   warn: (message: any, options?: LoggerOptions) => any;
   error: (message: any, options?: LoggerOptions) => any;
   // 错误上报 1. 打印ERROR 2. 异常上报
-  report: (message: any, options?: LoggerOptions) => any;
+  report: (message: any, options: ReportOptions) => any;
   spinner: (message: any, options?: SpinnerOptions) => any;
   progress: (message: any, options?: ProgressOptions) => any;
 }
@@ -63,6 +64,12 @@ interface ProgressOptions {
   incomplete?: string;
   clear?: boolean;
   callback?: Function;
+}
+
+interface ReportOptions {
+  type: 'error' | 'component';
+  context?: string;
+  params?: object;
 }
 
 export class Logger implements ILogger {
@@ -109,9 +116,34 @@ export class Logger implements ILogger {
     }
   }
 
-  static report(message: any, options: LoggerOptions = {}) {
-    const { context, level } = options;
-    printMessage({ lable: 'report', level, message, color: chalk.green, context });
+  static async report(message: any, options: ReportOptions) {
+    const { type, context, params } = options;
+    switch (type) {
+      case 'error': {
+        const errorRes = await request('https://tool.serverlessfans.com/error/center', {
+          method: 'post',
+          data: {
+            tag: context,
+            error: message,
+          },
+        });
+        !isEmpty(errorRes) && this.log(errorRes[0], { color: 'green' });
+        break;
+      }
+      case 'component': {
+        await request('https://tool.serverlessfans.com/component/actions', {
+          method: 'post',
+          data: Object.assign(
+            {
+              message,
+              component: context,
+            },
+            params,
+          ),
+        });
+        break;
+      }
+    }
   }
 
   static info(message: any, options: LoggerOptions = {}) {
@@ -148,7 +180,7 @@ export class Logger implements ILogger {
     this.callFunction('log', message, options);
   }
 
-  report(message: any, options: LoggerOptions = {}) {
+  report(message: any, options: ReportOptions) {
     this.callFunction('report', message, options);
   }
 
@@ -188,7 +220,7 @@ export class Logger implements ILogger {
   private callFunction(
     name: LogLevel,
     message: any,
-    options: LoggerOptions | LogOptions | ProgressOptions,
+    options: LoggerOptions | LogOptions | ProgressOptions | ReportOptions,
   ) {
     const instance = this.getInstance();
     const func = instance && (instance as typeof Logger)[name];

@@ -1,22 +1,32 @@
 import download, { DownloadOptions as MyDownloadOptions } from 'download';
-import got, { GotJSONOptions } from 'got';
+import got from 'got';
 
 import { ProgressService, ProgressType, ProgressBarOptions } from '@serverless-devs/s-progress-bar';
 
 import { green } from 'colors';
 
 // @ts-ignore
-export interface requestOptions extends GotJSONOptions {
+export interface requestOptions {
+  method?: 'get' | 'post';
+  data?: object;
   json?: boolean;
 }
 
 export type DownloadOptions = MyDownloadOptions;
 
-const defaultOptions = { json: true };
+enum METHOD_ENUM {
+  get = 'query',
+  post = 'body',
+}
 
 export async function request(url: string, options?: requestOptions): Promise<any> {
   // @ts-ignore
-  const result: any = await got(url, Object.assign(defaultOptions, options || {}));
+  const { method = 'get', data, json } = options || {};
+  const result: any = await got(url, {
+    method: method.toUpperCase(),
+    [METHOD_ENUM[method]]: data,
+    json: json || true,
+  });
   const { statusCode, body }: { statusCode: number; body: any } = result;
   const errorMessage = (code: string | number, message: string) =>
     `Url:${url}\n,params: ${JSON.stringify(options)}\n,ErrorMessage:${message}\n, Code: ${code}`;

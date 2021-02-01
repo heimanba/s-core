@@ -66,6 +66,21 @@ class LoggerDemo {
 
     req.end();
   }
+
+  report() {
+    this.logger.report('错误上报', {
+      type: 'error',
+      context: 'fc',
+    });
+    this.logger.report('组件数据上报', {
+      type: 'component',
+      context: 'fc',
+      params: {
+        action: 'deploy',
+        account: '123435',
+      },
+    });
+  }
 }
 
 const demo = new LoggerDemo();
@@ -73,7 +88,9 @@ const demo = new LoggerDemo();
 // demo.print();
 // demo.spinner();
 // demo.progress();
-demo.getDefaultLogWithContext();
+// demo.getDefaultLogWithContext();
+
+demo.report();
 
 // const logger = new Logger();
 // logger.error('dankun');
