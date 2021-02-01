@@ -51,7 +51,7 @@ export enum ORA_STATUS {
 
 export function printMessage(messageOptions: IPrintMessage) {
   const { level, lable, message, color, context, writeStreamType } = messageOptions;
-  const list = ['print', 'report', 'spinner', 'progress'];
+  const list = ['log', 'report', 'spinner', 'progress'];
   if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && !list.includes(level)) return;
 
   const output = isObject(message)
