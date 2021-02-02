@@ -33,6 +33,7 @@
     "@b-mamba/s-progress-bar": "^0.0.2",
     "@serverless-devs/s-zip": "0.0.8",
     "chalk": "^4.1.0",
+    "decompress": "^4.2.1",
     "download": "^8.0.0",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",

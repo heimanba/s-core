@@ -4,6 +4,8 @@ import { ProgressService, ProgressType, ProgressBarOptions } from '@serverless-d
 import { green } from 'colors';
 import spinner from './spinner';
 import { Logger } from '../logger';
+import decompress from 'decompress';
+import fs from 'fs-extra';
 
 // @ts-ignore
 interface HintOptions {
@@ -57,8 +59,8 @@ export async function request(url: string, options?: requestOptions): Promise<an
   return body.Response;
 }
 
-export async function downloadRequest(url, dest, options: MyDownloadOptions) {
-  console.log('prepare downloading');
+export async function downloadRequest(url, dest, options?: MyDownloadOptions) {
+  Logger.log('prepare downloading');
   let len;
   try {
     const { headers } = await got(url, { method: 'HEAD' });
@@ -79,9 +81,20 @@ export async function downloadRequest(url, dest, options: MyDownloadOptions) {
     const format = `((:bar)) ${green(':loading')} ${green('downloading')} `;
     bar = new ProgressService(ProgressType.Loading, pbo, format);
   }
-  await download(url, dest, options).on('downloadProgress', (progress) => {
-    bar.update(progress.transferred);
-  });
-  console.log('start downloading');
+  Logger.log('start downloading');
+  await download(url, dest, Object.assign({ filename: 'download.package' }, options)).on(
+    'downloadProgress',
+    (progress) => {
+      bar.update(progress.transferred);
+    },
+  );
   bar.terminate();
+  Logger.log('end downloading');
+
+  const vm = spinner('开始解压文件');
+  await decompress(`${dest}/download.package`, dest, {
+    strip: 1,
+  });
+  await fs.unlink(`${dest}/download.package`);
+  vm.succeed('文件解压完成');
 }
