@@ -60,6 +60,7 @@ export async function request(url: string, options?: requestOptions): Promise<an
 }
 
 export async function downloadRequest(url, dest, options?: MyDownloadOptions) {
+  const { extract, strip, ...rest } = options || {};
   Logger.log('prepare downloading');
   let len;
   try {
@@ -82,19 +83,19 @@ export async function downloadRequest(url, dest, options?: MyDownloadOptions) {
     bar = new ProgressService(ProgressType.Loading, pbo, format);
   }
   Logger.log('start downloading');
-  await download(url, dest, Object.assign({ filename: 'download.package' }, options)).on(
-    'downloadProgress',
-    (progress) => {
-      bar.update(progress.transferred);
-    },
-  );
+
+  await download(url, dest, rest).on('downloadProgress', (progress) => {
+    bar.update(progress.transferred);
+  });
   bar.terminate();
   Logger.log('end downloading');
 
-  const vm = spinner('开始解压文件');
-  await decompress(`${dest}/download.package`, dest, {
-    strip: 1,
-  });
-  await fs.unlink(`${dest}/download.package`);
-  vm.succeed('文件解压完成');
+  if (extract) {
+    const files = fs.readdirSync(dest);
+    const filename = files.find((item) => url.includes(item));
+    const vm = spinner('开始解压文件');
+    await decompress(`${dest}/${filename}`, dest, { strip });
+    await fs.unlink(`${dest}/${filename}`);
+    vm.succeed('文件解压完成');
+  }
 }

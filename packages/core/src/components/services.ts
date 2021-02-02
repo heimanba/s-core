@@ -30,5 +30,5 @@ export async function getComponentDownloadUrl(params: IRemoteComponentParams) {
 }
 
 export async function execComponentDownload(url: string, tempDir: string) {
-  return downloadRequest(url, tempDir);
+  return downloadRequest(url, tempDir, { extract: true, strip: 1 });
 }
