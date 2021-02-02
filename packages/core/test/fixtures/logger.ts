@@ -15,8 +15,14 @@ class LoggerDemo {
 
   getDefaultLogWithContext() {
     this.logger.info('abct', { context: 'S-CORE', level: 'info' });
+  }
+  error() {
     this.logger.error('abct', { context: 'S-CORE', level: 'error' });
+  }
+  warn() {
     this.logger.warn('abct', { context: 'S-CORE', level: 'warn' });
+  }
+  debug() {
     this.logger.debug('abct', { context: 'S-CORE', level: 'debug' });
   }
 
