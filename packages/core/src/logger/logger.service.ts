@@ -51,8 +51,7 @@ export enum ORA_STATUS {
 
 export function printMessage(messageOptions: IPrintMessage) {
   const { level, lable, message, color, context, writeStreamType } = messageOptions;
-  const list = ['log', 'report', 'spinner', 'progress'];
-  if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && !list.includes(level)) return;
+  if (LOG_LEVEL_ENUM[level] > LOG_LEVEL_ENUM[lable] && level !== 'log') return;
 
   const output = isObject(message) ? `'Object:'\n${JSON.stringify(message, null, 2)}\n` : message;
   const contextMessage = context ? chalk.yellowBright(`[${context}] `) : '';

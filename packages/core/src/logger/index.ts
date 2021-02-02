@@ -1,19 +1,8 @@
-import { isObject, isEmpty } from '../libs/utils';
-import { request } from '../libs/request';
+import { isObject } from '../libs/utils';
 import chalk from 'chalk';
-import ora from 'ora';
-import ProgressBar from 'progress';
-import { ORA_STATUS, printMessage, printStackTrace } from './logger.service';
+import { printMessage, printStackTrace } from './logger.service';
 
-export type LogLevel =
-  | 'info'
-  | 'debug'
-  | 'warn'
-  | 'error'
-  | 'log'
-  | 'report'
-  | 'spinner'
-  | 'progress';
+export type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'log';
 
 export interface ILogger {
   // 打印
@@ -23,10 +12,6 @@ export interface ILogger {
   debug: (message: any, options?: LoggerOptions) => any;
   warn: (message: any, options?: LoggerOptions) => any;
   error: (message: any, options?: LoggerOptions) => any;
-  // 错误上报 1. 打印ERROR 2. 异常上报
-  report: (message: any, options: ReportOptions) => any;
-  spinner: (message: any, options?: SpinnerOptions) => any;
-  progress: (message: any, options?: ProgressOptions) => any;
 }
 
 interface LoggerOptions {
@@ -35,47 +20,13 @@ interface LoggerOptions {
   trace?: string;
 }
 
-interface SpinnerOptions extends LoggerOptions {
-  spinning?: {
-    text: string;
-    color: LogOptions;
-  };
-  status?: 'start' | 'spinning' | 'stop' | 'success' | 'error' | 'warn' | 'info';
-}
-
-interface IInstanceLogger extends ILogger {
-  ora?: any;
-  bar?: any;
-}
+interface IInstanceLogger extends ILogger {}
 
 interface LogOptions {
   color?: 'black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white' | 'gray';
 }
 
-interface ProgressOptions {
-  status: 'start' | 'tick';
-  size: number;
-  curr?: number;
-  head?: string;
-  width?: number;
-  renderThrottle?: number;
-  stream?: NodeJS.WritableStream;
-  complete?: string;
-  incomplete?: string;
-  clear?: boolean;
-  callback?: Function;
-}
-
-interface ReportOptions {
-  type: 'error' | 'component';
-  context?: string;
-  params?: object;
-}
-
 export class Logger implements ILogger {
-  static ora = null;
-  static bar = null;
-
   protected static instance?: typeof Logger | IInstanceLogger = Logger;
 
   static overrideLogger(logger: ILogger | boolean) {
@@ -85,65 +36,6 @@ export class Logger implements ILogger {
   static log(message: any, options: LogOptions = {}) {
     const { color } = options;
     return process.stdout.write(`${color ? chalk[color](message) : message}\n`);
-  }
-
-  static spinner(message: any, options: SpinnerOptions = {}) {
-    const { status, spinning } = options;
-    if (status === 'start') {
-      if (this.instance.ora) {
-        this.instance.ora.clear();
-        this.instance.ora = null;
-      }
-      this.instance.ora = ora(message).start();
-    } else if (status === 'spinning') {
-      this.instance.ora.color = spinning.color;
-      this.instance.ora.text = spinning.text;
-    } else {
-      this.instance.ora[ORA_STATUS[status]](message);
-      if (this.instance.ora) this.instance.ora.clear();
-    }
-  }
-
-  static progress(message: any, options: ProgressOptions) {
-    const { status, size, ...rest } = options;
-    if (status === 'start') {
-      this.instance.bar = new ProgressBar(`${message} [:bar] :percent :etas :current/:total`, {
-        total: size,
-        ...rest,
-      });
-    } else if (status === 'tick') {
-      this.instance.bar.tick(size);
-    }
-  }
-
-  static async report(message: any, options: ReportOptions) {
-    const { type, context, params } = options;
-    switch (type) {
-      case 'error': {
-        const errorRes = await request('https://tool.serverlessfans.com/error/center', {
-          method: 'post',
-          data: {
-            tag: context,
-            error: message,
-          },
-        });
-        !isEmpty(errorRes) && this.log(errorRes[0], { color: 'green' });
-        break;
-      }
-      case 'component': {
-        await request('https://tool.serverlessfans.com/component/actions', {
-          method: 'post',
-          data: Object.assign(
-            {
-              message,
-              component: context,
-            },
-            params,
-          ),
-        });
-        break;
-      }
-    }
   }
 
   static info(message: any, options: LoggerOptions = {}) {
@@ -182,10 +74,6 @@ export class Logger implements ILogger {
     this.callFunction('log', message, options);
   }
 
-  report(message: any, options: ReportOptions) {
-    this.callFunction('report', message, options);
-  }
-
   info(message: any, options: LoggerOptions = {}) {
     this.callFunction('info', message, options);
   }
@@ -202,14 +90,6 @@ export class Logger implements ILogger {
     this.callFunction('error', message, options);
   }
 
-  spinner(message: any, options: SpinnerOptions = {}) {
-    this.callFunction('spinner', message, options);
-  }
-
-  progress(message: any, options: ProgressOptions) {
-    this.callFunction('progress', message, options);
-  }
-
   setContext(context: string) {
     this.context = context;
   }
@@ -219,18 +99,18 @@ export class Logger implements ILogger {
     return instance === this ? Logger : instance;
   }
 
-  private callFunction(
-    name: LogLevel,
-    message: any,
-    options: LoggerOptions | LogOptions | ProgressOptions | ReportOptions,
-  ) {
+  private callFunction(name: LogLevel, message: any, options: LoggerOptions | LogOptions) {
     const instance = this.getInstance();
     const func = instance && (instance as typeof Logger)[name];
-    func && func.call(instance, message,
-      Object.assign(options || {}, {
-        // @ts-ignore
-        context: options.context || this.context,
-      }));
+    func &&
+      func.call(
+        instance,
+        message,
+        Object.assign(options || {}, {
+          // @ts-ignore
+          context: options.context || this.context,
+        }),
+      );
   }
 }
 
