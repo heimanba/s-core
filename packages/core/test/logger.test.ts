@@ -1,4 +1,4 @@
-import { Logger, ILogger } from '../src/decorators/logger/index';
+import { Logger, ILogger } from '../src/decorator/logger/index';
 
 class LoggerDemo {
   // @ts-ignore

@@ -1,13 +1,14 @@
-import { Logger } from '../../src/decorators/logger/index';
+import { Logger } from '../../src/decorator/logger/index';
 import { sleep } from '../../src/libs/utils';
+
 const https = require('https');
 
 class LoggerDemo {
   // @ts-ignore
-  @Logger logger: ILogger;
+  @Logger('S-CORE') logger: ILogger;
 
   getDefaultLog() {
-    this.logger.print('abct', { status: 'success' });
+    this.logger.info('abct', { status: 'success' });
   }
 
   getDefaultLogObect() {
@@ -25,6 +26,7 @@ class LoggerDemo {
   print() {
     this.logger.log('开始执行', { color: 'green' });
   }
+
   async spinner() {
     this.logger.spinner('开始执行', { status: 'start' });
     await sleep(1000);
@@ -38,6 +40,7 @@ class LoggerDemo {
     await sleep(1000);
     this.logger.spinner('执行成功', { status: 'success' });
   }
+
   progress() {
     const req = https.request({
       host: 'download.github.com',
@@ -91,7 +94,7 @@ const demo = new LoggerDemo();
 // demo.print();
 // demo.spinner();
 // demo.progress();
-demo.getDefaultLogWithContext();
+demo.getDefaultLog();
 
 // demo.report();
 

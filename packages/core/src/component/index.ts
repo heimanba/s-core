@@ -9,17 +9,14 @@ import {
   buildComponentInstance,
 } from './load.service';
 import { execArgs } from './args.services';
-import { credentials } from './credentials.service';
-import { iInputs } from '../interface';
-// import { Logger, ILogger } from '../decorators';
 
 const { packTo } = require('@serverless-devs/s-zip');
-
 
 export class Component {
   state: any;
   protected id: string;
   protected $$context: IComponentContext;
+
   // @Logger logger: ILogger;
 
   constructor(id?: string, context?: IComponentContext) {
@@ -37,9 +34,7 @@ export class Component {
     await this.$$context.setState(id, state);
   }
 
-  async credentials(input: iInputs) {
-    await credentials(input);
-  }
+  credentials;
 
   args(args: any, boolList?: [], moreList?: [], argsList?: []) {
     return execArgs(args, boolList, moreList, argsList);
@@ -85,22 +80,23 @@ export class Component {
   /**
    * @description 主要的方法，用于load组件。
    * 组件会下载到 ~/.s/components 目录下面
-   * @param name 组件名，注册在应用市场的组件
+   * @param name fc@0.0.1组件名，注册在应用市场的组件
    * @param componentAlias 组件别名
    * @param provider SERVERLESS厂商
    */
   async load(name: string, componentAlias = '', provider = 'alibaba') {
     const { componentPathRoot } = this.$$context;
-    // this.logger.print('fetch latest component version', { spinner: true, status: 'start' });
+    let version;
+    [name, version] = name.split('@');
     const componentPaths: IComponentPath = await generateComponentPath(
       {
         name,
         provider,
+        version,
       },
       componentPathRoot,
     );
     const { componentPath } = componentPaths;
-    // this.logger.print('succeed latest component version', { spinner: true, status: 'success' });
 
     if (!fs.existsSync(componentPaths.lockPath)) {
       await downloadComponent(componentPath, { name, provider });

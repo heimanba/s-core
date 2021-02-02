@@ -1,8 +1,8 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { getComponentVersion, getComponentDownloadUrl, execComponentDownload } from '../components/services';
+import { getComponentVersion, getComponentDownloadUrl, execComponentDownload } from './services';
 import { IComponentParams } from '../interface';
-import { IComponentContext } from './context.service';
+import { Logger } from '../logger/index';
 
 const { spawnSync } = require('child_process');
 
@@ -26,9 +26,7 @@ export const generateComponentPath = async (
     const Response = await getComponentVersion({ name, provider });
     version = Response.Version;
   }
-
   const rootPath = `./${name}-${provider}@${version}`;
-
   // 如果有根路径
   if (componentPathRoot) {
     return {
@@ -53,7 +51,7 @@ export const installDependency = async (
   const existPackageJson = fs.existsSync(path.join(componentPath, 'package.json'));
   const existNodeModules = fs.existsSync(path.join(componentPath, 'node_modules'));
   if (existPackageJson && !existNodeModules) {
-    console.log('Installing dependencies in serverless-devs core ...');
+    Logger.log('Installing dependencies in serverless-devs core ...');
     const result = spawnSync('npm install --registry=https://registry.npm.taobao.org', [], {
       cwd: componentPath,
       stdio: 'inherit',
@@ -72,14 +70,12 @@ export const downloadComponent = async (outputDir: string, { name, provider }: I
   await execComponentDownload(Response.Url, outputDir);
 };
 
-export const buildComponentInstance = async (context: IComponentContext, componentPath: string, id?: string, componentAlias?: string) => {
+export const buildComponentInstance = async (componentPath: string) => {
   const requiredComponentPath = componentPath.lastIndexOf('index') > -1 ? componentPath : path.join(componentPath, 'index');
   const baseChildComponent = await require(requiredComponentPath);
   const ChildComponent = baseChildComponent.default ? baseChildComponent.default : baseChildComponent;
-  const childComponentId = `${id}.${componentAlias || ChildComponent.name}`;
-  const childComponentInstance = new ChildComponent(childComponentId, context);
-  if (childComponentInstance.init) {
-    await childComponentInstance.init();
-  }
-  return childComponentInstance;
+  // const childComponentId = `${id}.${ChildComponent.name}`;
+  // const childComponentInstance = new ChildComponent(childComponentId);
+  return ChildComponent;
 };
+

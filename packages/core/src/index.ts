@@ -1,3 +1,4 @@
 export { Logger, Log, ILogger } from './logger/index';
 
-export { Component } from './component/index';
+export { request, downloadRequest } from './libs/request';
+

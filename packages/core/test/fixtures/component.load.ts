@@ -1,5 +1,6 @@
-import { Component } from '../../src/component/index';
+import { Component } from '../../src/components/index';
 
-const component = new Component();
-
-component.load('fc', 'component', 'alibaba');
+Component.load({
+  name: 'fc@0.1.1',
+  provider: 'alibaba',
+}).then((res) => console.log(res));

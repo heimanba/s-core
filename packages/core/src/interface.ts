@@ -30,6 +30,7 @@ export interface IComponentParams {
   name: string;
   provider: string;
   type?: string;
+  version?: string;
 }
 
 // export interface LoggerOptions {

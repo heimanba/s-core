@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Logger } from '../../logger';
+import { Logger as MyLogger } from '../../logger';
 
-export const LogProperty = (target: any, key: string) => {
+export const Logger = (context: string) => (target: any, key: string) => {
   // @ts-ignore
-  let _val = this[key] || Logger;
+  let _val = this[key] || new MyLogger(context);
 
   const getter = function () {
     return _val;
@@ -23,3 +22,5 @@ export const LogProperty = (target: any, key: string) => {
     });
   }
 };
+
+export const Log = Logger;

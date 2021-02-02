@@ -174,7 +174,9 @@ export class Logger implements ILogger {
     printMessage({ lable: 'debug', level, message, color: chalk.magentaBright, context });
   }
 
-  constructor(protected context?: string) {}
+  constructor(protected context?: string) {
+    this.setContext(context);
+  }
 
   log(message: any, options: LogOptions = {}) {
     this.callFunction('log', message, options);
@@ -224,7 +226,11 @@ export class Logger implements ILogger {
   ) {
     const instance = this.getInstance();
     const func = instance && (instance as typeof Logger)[name];
-    func && func.call(instance, message, options);
+    func && func.call(instance, message,
+      Object.assign(options || {}, {
+        // @ts-ignore
+        context: options.context || this.context,
+      }));
   }
 }
 

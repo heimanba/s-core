@@ -42,7 +42,6 @@ export async function request(url: string, options?: requestOptions): Promise<an
 export async function downloadRequest(url, dest, options: MyDownloadOptions) {
   console.log('prepare downloading');
   let len;
-  // TODO: add loading
   try {
     const { headers } = await got(url, { method: 'HEAD' });
     len = parseInt(headers['content-length'], 10);

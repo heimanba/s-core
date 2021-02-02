@@ -1,4 +1,4 @@
-import { getComponentVersion } from '../../src/component/services';
+import { getComponentVersion } from '../../src/components/services';
 
 describe('component.service.test', () => {
   it('测试请求成功', async () => {
