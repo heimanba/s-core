@@ -27,18 +27,19 @@ class LoggerDemo {
   }
 
   log() {
-    this.logger.log('开始执行', { color: 'green' });
+    this.logger.log('开始执行');
+    this.logger.log('开始执行', 'green');
   }
 }
 
 const demo = new LoggerDemo();
 // demo.getDefaultLog();
-// demo.log();
+demo.log();
 // demo.getDefaultLog();
-demo.getDefaultLogWithContext();
-demo.error();
-demo.warn();
-demo.debug();
+// demo.getDefaultLogWithContext();
+// demo.error();
+// demo.warn();
+// demo.debug();
 
 // demo.report();
 

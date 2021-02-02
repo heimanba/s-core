@@ -6,7 +6,7 @@ export type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'log';
 
 export interface ILogger {
   // 打印
-  log: (message: any, options?: LogOptions) => any;
+  log: (message: any, options?: LogColor) => any;
   // 当成日志
   info: (message: any, options?: LoggerOptions) => any;
   debug: (message: any, options?: LoggerOptions) => any;
@@ -22,10 +22,16 @@ interface LoggerOptions {
 
 type IInstanceLogger = ILogger;
 
-interface LogOptions {
-  color?: 'black' | 'red' | 'green' | 'yellow' | 'blue' | 'magenta' | 'cyan' | 'white' | 'gray';
-}
-
+type LogColor =
+  | 'black'
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'gray';
 export class Logger implements ILogger {
   protected static instance?: typeof Logger | IInstanceLogger = Logger;
 
@@ -33,8 +39,7 @@ export class Logger implements ILogger {
     this.instance = isObject(logger) ? (logger as ILogger) : undefined;
   }
 
-  static log(message: any, options: LogOptions = {}) {
-    const { color } = options;
+  static log(message: any, color: LogColor = 'white') {
     return process.stdout.write(`${color ? chalk[color](message) : message}\n`);
   }
 
@@ -70,8 +75,8 @@ export class Logger implements ILogger {
     this.setContext(context);
   }
 
-  log(message: any, options: LogOptions = {}) {
-    this.callFunction('log', message, options);
+  log(message: any, color: LogColor = 'white') {
+    this.callFunction('log', message, color);
   }
 
   info(message: any, options: LoggerOptions = {}) {
@@ -99,7 +104,7 @@ export class Logger implements ILogger {
     return instance === this ? Logger : instance;
   }
 
-  private callFunction(name: LogLevel, message: any, options: LoggerOptions | LogOptions) {
+  private callFunction(name: LogLevel, message: any, options: LoggerOptions | LogColor) {
     const instance = this.getInstance();
     const func = instance && (instance as typeof Logger)[name];
     func &&

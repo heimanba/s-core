@@ -19,7 +19,7 @@ export default async function report(message: any, options: ReportOptions) {
           error: message,
         },
       });
-      !isEmpty(result) && Logger.log(result[0], { color: 'green' });
+      !isEmpty(result) && Logger.log(result[0], 'green');
       return result;
     }
     case 'component': {
