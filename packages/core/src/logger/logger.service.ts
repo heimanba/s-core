@@ -35,7 +35,8 @@ export function printMessage(messageOptions: IPrintMessage) {
 
   const output = isObject(message) ? `'Object:'\n${JSON.stringify(message, null, 2)}\n` : message;
   const contextMessage = context ? chalk.yellowBright(`[${context}] `) : '';
-  let computedMessage = `[${getTimestamp()}] ${process.pid} [${lable.toUpperCase()}] `;
+  let computedMessage = `[${getTimestamp()}] ${process.pid} `;
+  computedMessage += `[${lable.toUpperCase().padEnd(5)}] `;
   computedMessage += `${contextMessage} - ${output}\n`;
   process[writeStreamType ?? 'stdout'].write(color(computedMessage));
 }

@@ -36,6 +36,9 @@ const demo = new LoggerDemo();
 // demo.log();
 // demo.getDefaultLog();
 demo.getDefaultLogWithContext();
+demo.error();
+demo.warn();
+demo.debug();
 
 // demo.report();
 
