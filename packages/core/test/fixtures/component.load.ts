@@ -1,6 +1,10 @@
-import { Component } from '../../src/components/index';
+import { Component } from '../../src/decorator';
 
-Component.load({
-  name: 'fc@0.1.1',
-  provider: 'alibaba',
-}).then((res) => console.log(res));
+
+class ComponentDemo {
+  // @ts-ignore
+  @Component('fc', 'alibaba') component;
+}
+
+const componentDemo = new ComponentDemo();
+componentDemo.component.load().then((res) => console.log(res));

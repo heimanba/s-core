@@ -8,22 +8,32 @@ import {
   installDependency,
 } from './load.service';
 
-export interface IComponentLoad {
-  name: string;
-  provider: 'alibaba';
-}
 
 export class Component {
-  static async load(params: IComponentLoad) {
-    const { name: componentName, provider } = params;
-    const [name, version] = componentName.split('@');
-    const componentPaths: IComponentPath = await generateComponentPath({ name, provider, version },
-      S_ROOT_HOME_COMPONENT);
+  constructor(protected name: string, protected provider: string) {
+    this.name = name;
+    this.provider = provider;
+  }
+
+  private getBaseArgs(name: string, provider: string) {
+    const [componentName, version] = (name || this.name).split('@');
+    return { name: componentName, version, provider: provider || this.provider };
+  }
+
+  /**
+   * @description 主要的方法，用于load组件。
+   * 组件会下载到 ~/.s/components 目录下面
+   * name: 组件名, 默认load最新版本组件，支持load某个版本组件 load@0.11
+   * provider: SERVERLESS厂商
+   */
+  async load(name?: string, provider?: string) {
+    const baseArgs = this.getBaseArgs(name, provider);
+    const componentPaths: IComponentPath = await generateComponentPath(baseArgs, S_ROOT_HOME_COMPONENT);
     const { componentPath, lockPath } = componentPaths;
     // 通过是否存在 .s.lock文件来判断
     if (!fs.existsSync(lockPath)) {
-      await downloadComponent(componentPath, { name, provider });
-      await installDependency(name, componentPaths);
+      await downloadComponent(componentPath, baseArgs);
+      await installDependency(baseArgs.name, componentPaths);
     }
     return await buildComponentInstance(componentPath);
   }

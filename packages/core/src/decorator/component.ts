@@ -1,8 +1,8 @@
-import { Logger as MyLogger } from '../../logger';
+import { Component as MyComponent } from '../components';
 
-export const Logger = (context: string) => (target: any, key: string) => {
+export const Component = (name: string, provider: string) => (target: any, key: string) => {
   // @ts-ignore
-  let _val = this[key] || new MyLogger(context);
+  let _val = this[key] || new MyComponent(name, provider);
 
   const getter = function () {
     return _val;
@@ -22,5 +22,3 @@ export const Logger = (context: string) => (target: any, key: string) => {
     });
   }
 };
-
-export const Log = Logger;
