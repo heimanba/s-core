@@ -52,7 +52,7 @@ export const installDependency = async (
   const existNodeModules = fs.existsSync(path.join(componentPath, 'node_modules'));
   if (existPackageJson && !existNodeModules) {
     Logger.log('Installing dependencies in serverless-devs core ...');
-    const result = spawnSync('npm install --registry=https://registry.npm.taobao.org', [], {
+    const result = spawnSync('npm install --production --registry=https://registry.npm.taobao.org', [], {
       cwd: componentPath,
       stdio: 'inherit',
       shell: true,
