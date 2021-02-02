@@ -1,3 +1,3 @@
 export { Logger, Log, ILogger } from './logger/index';
 
-export { request, downloadRequest } from './common/request';
+export { request, downloadRequest } from './common';

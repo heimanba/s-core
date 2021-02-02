@@ -1,4 +1,4 @@
-import { request, downloadRequest } from '../common/request';
+import { request, downloadRequest } from '../common';
 
 export const SERVERLESS_API = 'https://tool.serverlessfans.com/api';
 

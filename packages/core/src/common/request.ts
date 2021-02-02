@@ -1,15 +1,21 @@
 import download, { DownloadOptions as MyDownloadOptions } from 'download';
 import got from 'got';
-
 import { ProgressService, ProgressType, ProgressBarOptions } from '@serverless-devs/s-progress-bar';
-
 import { green } from 'colors';
+import spinner from './spinner';
+import { Logger } from '../logger';
 
 // @ts-ignore
+interface HintOptions {
+  spinning?: string;
+  success?: string;
+  error?: string;
+}
 export interface requestOptions {
   method?: 'get' | 'post';
   data?: object;
   json?: boolean;
+  hint?: HintOptions;
 }
 
 export type DownloadOptions = MyDownloadOptions;
@@ -21,21 +27,33 @@ enum METHOD_ENUM {
 
 export async function request(url: string, options?: requestOptions): Promise<any> {
   // @ts-ignore
-  const { method = 'get', data, json } = options || {};
+  const { method = 'get', data, json, hint = {} } = options || {};
+
+  const { spinning, success, error } = hint;
+  let vm = null;
+  spinning && (vm = spinner(spinning));
+
   const result: any = await got(url, {
     method: method.toUpperCase(),
     [METHOD_ENUM[method]]: data,
     json: json || true,
   });
+
+  spinning && vm.stop();
+
   const { statusCode, body }: { statusCode: number; body: any } = result;
   const errorMessage = (code: string | number, message: string) =>
     `Url:${url}\n,params: ${JSON.stringify(options)}\n,ErrorMessage:${message}\n, Code: ${code}`;
 
   if (statusCode !== 200) {
+    error && Logger.error(error);
     throw new Error(errorMessage(statusCode, '系统异常'));
   } else if (body.Error) {
+    error && Logger.error(error);
     throw new Error(errorMessage(body.Error.Code, body.Error.Message));
   }
+
+  success && Logger.info(success);
   return body.Response;
 }
 

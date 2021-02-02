@@ -1,4 +1,4 @@
-import report from '../../src/common/report';
+import { report } from '../../src/common';
 
 class ReportDemo {
   error() {
