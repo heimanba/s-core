@@ -1,6 +1,6 @@
 {
   "name": "@serverless-devs/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Serverless Devs Tool Core Component",
   "keywords": [
     "Serverless",
@@ -30,7 +30,7 @@
   },
   "main": "./lib/index.js",
   "dependencies": {
-    "@b-mamba/s-progress-bar": "^0.0.2",
+    "@b-mamba/s-progress-bar": "^0.0.3",
     "@serverless-devs/s-zip": "0.0.8",
     "chalk": "^4.1.0",
     "download": "^8.0.0",
