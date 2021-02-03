@@ -16,25 +16,34 @@ class LoggerDemo {
   getDefaultLogWithContext() {
     this.logger.info('abct', { context: 'S-CORE', level: 'info' });
   }
+  info() {
+    this.logger.info('测试INFO', { context: 'S-CORE' });
+  }
   error() {
-    this.logger.error('abct', { context: 'S-CORE', level: 'error' });
+    this.logger.error('测试ERROR', { context: 'S-CORE' });
   }
   warn() {
-    this.logger.warn('abct', { context: 'S-CORE', level: 'warn' });
+    this.logger.warn('测试WARN', { context: 'S-CORE' });
   }
   debug() {
-    this.logger.debug('abct', { context: 'S-CORE', level: 'debug' });
+    this.logger.debug('测试DEBUG', { context: 'S-CORE', level: 'debug' });
+  }
+  debugLevel() {
+    this.logger.debug('测试DEBUG LEVEL', { context: 'S-CORE', level: 'error' });
   }
 
   log() {
-    this.logger.log('开始执行');
-    this.logger.log('开始执行', 'green');
+    this.logger.log('开始执行..,', 'yellow');
+    this.logger.log('执行成功', 'green');
   }
 }
 
 const demo = new LoggerDemo();
-// demo.getDefaultLog();
-demo.log();
+demo.info();
+demo.error();
+demo.warn();
+demo.debug();
+demo.debugLevel();
 // demo.getDefaultLog();
 // demo.getDefaultLogWithContext();
 // demo.error();

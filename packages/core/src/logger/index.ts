@@ -6,7 +6,7 @@ export type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'log';
 
 export interface ILogger {
   // 打印
-  log: (message: any, options?: LogColor) => any;
+  log: (message: any, color?: LogColor) => any;
   // 当成日志
   info: (message: any, options?: LoggerOptions) => any;
   debug: (message: any, options?: LoggerOptions) => any;
@@ -31,6 +31,7 @@ type LogColor =
   | 'magenta'
   | 'cyan'
   | 'white'
+  |'whiteBright'
   | 'gray';
 export class Logger implements ILogger {
   protected static instance?: typeof Logger | IInstanceLogger = Logger;
@@ -39,7 +40,7 @@ export class Logger implements ILogger {
     this.instance = isObject(logger) ? (logger as ILogger) : undefined;
   }
 
-  static log(message: any, color: LogColor = 'white') {
+  static log(message: any, color?: LogColor) {
     return process.stdout.write(`${color ? chalk[color](message) : message}\n`);
   }
 

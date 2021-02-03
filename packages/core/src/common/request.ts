@@ -9,10 +9,11 @@ import fs from 'fs-extra';
 
 // @ts-ignore
 interface HintOptions {
-  spinning?: string;
+  loading?: string;
   success?: string;
   error?: string;
 }
+
 export interface requestOptions {
   method?: 'get' | 'post';
   data?: object;
@@ -30,32 +31,37 @@ enum METHOD_ENUM {
 export async function request(url: string, options?: requestOptions): Promise<any> {
   // @ts-ignore
   const { method = 'get', data, json, hint = {} } = options || {};
-
-  const { spinning, success, error } = hint;
+  const { loading, success, error } = hint;
   let vm = null;
-  spinning && (vm = spinner(spinning));
-
-  const result: any = await got(url, {
-    method: method.toUpperCase(),
-    [METHOD_ENUM[method]]: data,
-    json: json || true,
-  });
-
-  spinning && vm.stop();
-
-  const { statusCode, body }: { statusCode: number; body: any } = result;
+  let result = null;
   const errorMessage = (code: string | number, message: string) =>
     `Url:${url}\n,params: ${JSON.stringify(options)}\n,ErrorMessage:${message}\n, Code: ${code}`;
+  loading && (vm = spinner(loading));
+
+  try {
+    result = await got(url, {
+      method: method.toUpperCase(),
+      [METHOD_ENUM[method]]: data,
+      json: json || true,
+    });
+    loading && vm.stop();
+  } catch (e) {
+    loading && vm.stop();
+    Logger.log(e.message, 'red');
+    throw new Error(errorMessage(e.statusCode, e.message));
+  }
+
+  const { statusCode, body }: { statusCode: number; body: any } = result;
 
   if (statusCode !== 200) {
-    error && Logger.error(error);
+    error && Logger.log(error, 'red');
     throw new Error(errorMessage(statusCode, '系统异常'));
   } else if (body.Error) {
-    error && Logger.error(error);
+    error && Logger.log(error, 'red');
     throw new Error(errorMessage(body.Error.Code, body.Error.Message));
   }
 
-  success && Logger.info(success);
+  success && Logger.log(success, 'green');
   return body.Response;
 }
 
@@ -88,12 +94,12 @@ export async function downloadRequest(url, dest, options?: MyDownloadOptions) {
     bar.update(progress.transferred);
   });
   bar.terminate();
-  Logger.log('end downloading');
+  Logger.log('download success');
 
   if (extract) {
     const files = fs.readdirSync(dest);
     const filename = files.find((item) => url.includes(item));
-    const vm = spinner('开始解压文件');
+    const vm = spinner('文件解压中...');
     await decompress(`${dest}/${filename}`, dest, { strip });
     await fs.unlink(`${dest}/${filename}`);
     vm.succeed('文件解压完成');

@@ -12,22 +12,19 @@ class SpinnerDemo {
     vm.stop();
   }
   async test_request_hint() {
-    await request('https://tool.serverlessfans.com/error/center', {
-      method: 'post',
+    await request('https://api.github.com/users/octocat', {
       data: {
         tag: 'fc',
         error: 'error',
       },
       hint: {
-        spinning: '错误上报',
-        success: '错误上报成功',
-        error: '错误上报失败',
+        loading: '数据请求中...',
+        success: '数据请求成功',
+        error: '数据请求失败',
       },
     });
   }
 }
 
 const demo = new SpinnerDemo();
-
-// demo.start();
 demo.test_request_hint();
