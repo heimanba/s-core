@@ -31,7 +31,7 @@ type LogColor =
   | 'magenta'
   | 'cyan'
   | 'white'
-  |'whiteBright'
+  | 'whiteBright'
   | 'gray';
 export class Logger implements ILogger {
   protected static instance?: typeof Logger | IInstanceLogger = Logger;
@@ -76,7 +76,7 @@ export class Logger implements ILogger {
     this.setContext(context);
   }
 
-  log(message: any, color: LogColor = 'white') {
+  log(message: any, color: LogColor) {
     this.callFunction('log', message, color);
   }
 

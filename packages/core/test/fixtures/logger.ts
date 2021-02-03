@@ -1,11 +1,10 @@
-import { Logger } from '../../src/decorator/index';
+import { Logger, ILogger } from '../../src/decorator/index';
 
 class LoggerDemo {
-  // @ts-ignore
   @Logger('S-CORE') logger: ILogger;
 
   getDefaultLog() {
-    this.logger.info('abct', { status: 'success' });
+    this.logger.info('abct');
   }
 
   getDefaultLogObect() {
@@ -33,17 +32,18 @@ class LoggerDemo {
   }
 
   log() {
-    this.logger.log('开始执行..,', 'yellow');
+    this.logger.log('开始执行..,');
     this.logger.log('执行成功', 'green');
   }
 }
 
 const demo = new LoggerDemo();
-demo.info();
-demo.error();
-demo.warn();
-demo.debug();
-demo.debugLevel();
+// demo.info();
+// demo.error();
+// demo.warn();
+// demo.debug();
+// demo.debugLevel();
+demo.log();
 // demo.getDefaultLog();
 // demo.getDefaultLogWithContext();
 // demo.error();

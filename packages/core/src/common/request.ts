@@ -6,14 +6,11 @@ import spinner from './spinner';
 import { Logger } from '../logger';
 import decompress from 'decompress';
 import fs from 'fs-extra';
-
-// @ts-ignore
 interface HintOptions {
   loading?: string;
   success?: string;
   error?: string;
 }
-
 export interface requestOptions {
   method?: 'get' | 'post';
   data?: object;
@@ -47,21 +44,21 @@ export async function request(url: string, options?: requestOptions): Promise<an
     loading && vm.stop();
   } catch (e) {
     loading && vm.stop();
-    Logger.log(e.message, 'red');
+    spinner(e.message).fail();
     throw new Error(errorMessage(e.statusCode, e.message));
   }
 
   const { statusCode, body }: { statusCode: number; body: any } = result;
 
   if (statusCode !== 200) {
-    error && Logger.log(error, 'red');
+    error && spinner(error).fail();
     throw new Error(errorMessage(statusCode, '系统异常'));
   } else if (body.Error) {
-    error && Logger.log(error, 'red');
+    error && spinner(error).fail();
     throw new Error(errorMessage(body.Error.Code, body.Error.Message));
   }
 
-  success && Logger.log(success, 'green');
+  success && spinner(success).succeed();
   return body.Response;
 }
 
