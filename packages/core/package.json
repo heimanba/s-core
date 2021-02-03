@@ -1,6 +1,6 @@
 {
-  "name": "@b-mamba/s-core",
-  "version": "0.0.7",
+  "name": "@serverless-devs/core",
+  "version": "0.0.1",
   "description": "Serverless Devs Tool Core Component",
   "keywords": [
     "Serverless",
