@@ -2,6 +2,8 @@
  * @param { Promise } promise
  * @param { Object= } errorExt - Additional Information you can pass to the err object
  * @return { Promise }
+ * [ err, user ] = await to(UserModel.findById(1));
+ * if(!user) return cb('No user found');
  */
 export function to<T, U = Error>(
   promise: Promise<T>,
