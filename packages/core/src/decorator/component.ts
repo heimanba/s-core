@@ -1,8 +1,8 @@
 import { Component as MyComponent } from '../components';
 
-export const Component = (name: string, provider: string) => (target: any, key: string) => {
+export const Component = () => (target: any, key: string) => {
   // @ts-ignore
-  let _val = this[key] || new MyComponent(name, provider);
+  let _val = this[key] || new MyComponent();
 
   const getter = function () {
     return _val;

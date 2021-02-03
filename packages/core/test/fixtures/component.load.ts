@@ -2,8 +2,11 @@ import { Component } from '../../src/decorator';
 
 
 class ComponentDemo {
-  // @ts-ignore
-  @Component('fc', 'alibaba') component;
+  @Component() component;
+
+  async deploy() {
+    await this.component.load('fc', 'alibaba');
+  }
 }
 
 const componentDemo = new ComponentDemo();

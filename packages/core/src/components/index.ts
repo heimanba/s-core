@@ -10,14 +10,9 @@ import {
 
 
 export class Component {
-  constructor(protected name: string, protected provider: string) {
-    this.name = name;
-    this.provider = provider;
-  }
-
   private getBaseArgs(name: string, provider: string) {
-    const [componentName, version] = (name || this.name).split('@');
-    return { name: componentName, version, provider: provider || this.provider };
+    const [componentName, version] = name.split('@');
+    return { name: componentName, version, provider };
   }
 
   /**
