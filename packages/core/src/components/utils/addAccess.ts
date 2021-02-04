@@ -36,7 +36,7 @@ export class AddManager {
   inputFullData: ConfigMap; // 用户输入的inputProviderAlias为键 与 inputSecretID 为值 组成的对象
   protected inputProviderAlias = '';
   protected inputSecretID: any;
-  protected provider: string;
+  provider: string;
   aliasName: string;
   protected promptList: any[];
   protected isRightFormat = true;

@@ -1,7 +1,7 @@
-import { Component } from '../../src/decorator';
+import { HComponent } from '../../src/decorator';
 
 class CredentialsDemo {
-  @Component() component;
+  @HComponent() component;
 
   credentials() {
     const input = {
