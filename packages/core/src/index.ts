@@ -1,4 +1,4 @@
 export { Logger, ILogger } from './logger';
-export { Component } from './component';
+export { Component } from './components';
 
 export { request, downloadRequest } from './common';

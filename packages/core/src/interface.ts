@@ -7,7 +7,7 @@ export interface IInputsCredentials {
 export interface IInputsProject {
   ProjectName?: string;
   Component?: string;
-  Provider: string;
+  Provider?: string;
   AccessAlias?: string;
 }
 
