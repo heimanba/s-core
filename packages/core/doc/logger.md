@@ -5,10 +5,10 @@
 decorator使用方式(推荐)
 
 ```typescript
-const {Logger, ILogger} = require('@serverless-devs/core/decorator')
+const {HLogger, ILogger} = require('@serverless-devs/core')
 
 class LoggerDemo {
-  @Logger("S-CORE") logger: ILogger;
+  @HLogger("S-CORE") logger: ILogger;
 
   getLog() {
     this.logger.log('abct', {color: 'red'});
@@ -22,7 +22,7 @@ class LoggerDemo {
 const {Logger, ILogger} = require('@serverless-devs/core')
 
 export function loggerDemo() {
-  Logger.log('abct', {color: 'red'});
+  Logger.log('abct', "red");
 }
 ```
 
@@ -42,8 +42,7 @@ this.logger.log('执行成功', 'green');
 
 ```typescript
 class LoggerDemo {
-  // @ts-ignore
-  @Logger('S-CORE') logger: ILogger;
+  @HLogger('S-CORE') logger: ILogger;
   info() {
     this.logger.info('测试INFO', { context: 'S-CORE' });
   }

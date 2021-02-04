@@ -21,7 +21,7 @@ npm i @serverless-devs/core -S
 ```typescript
 // logger 使用
 class LoggerDemo {
-  @Logger('S-CORE') logger: ILogger;
+  @HLogger('S-CORE') logger: ILogger;
 
   getDefaultLog() {
     this.logger.info('测试');
@@ -30,7 +30,7 @@ class LoggerDemo {
 
 // Component 使用
 class ComponentDemo {
-  @Component() component;
+  @HComponent() component: IComponent;
 
   async deploy() {
     await this.component.load('fc', 'alibaba');

@@ -5,10 +5,10 @@
 decorator使用方式(推荐)
 
 ```typescript
-const {Component} = require('@serverless-devs/core/decorator')
+const {Component, IComponent} = require('@serverless-devs/core')
 
 class ComponentDemo {
-  @Component() component;
+  @HComponent() component: IComponent;
 
   async deploy() {
     await this.component.load('fc', 'alibaba');

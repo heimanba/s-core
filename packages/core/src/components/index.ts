@@ -8,6 +8,9 @@ import {
   installDependency,
 } from './load.service';
 
+export interface IComponent {
+  load: (name: string, provider: string) => Promise<any>;
+}
 
 export class Component {
   private getBaseArgs(name: string, provider: string) {
@@ -21,7 +24,7 @@ export class Component {
    * name: 组件名, 默认load最新版本组件，支持load某个版本组件 load@0.11
    * provider: SERVERLESS厂商
    */
-  async load(name?: string, provider?: string) {
+  async load(name: string, provider: string) {
     const baseArgs = this.getBaseArgs(name, provider);
     const componentPaths: IComponentPath = await generateComponentPath(baseArgs, S_ROOT_HOME_COMPONENT);
     const { componentPath, lockPath } = componentPaths;

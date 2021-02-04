@@ -1,3 +1,2 @@
-export { ILogger } from '../logger';
-export { Logger } from './logger';
-export { Component } from './component';
+export { Logger as HLogger } from './logger';
+export { Component as HComponent } from './component';
