@@ -1,7 +1,7 @@
-import { Logger, ILogger } from '../../src/decorator/index';
+import { HLogger } from '../../src';
 
 class LoggerDemo {
-  @Logger('S-CORE') logger: ILogger;
+  @HLogger('S-CORE') logger;
 
   getDefaultLog() {
     this.logger.info('abct');
@@ -15,18 +15,23 @@ class LoggerDemo {
   getDefaultLogWithContext() {
     this.logger.info('abct', { context: 'S-CORE', level: 'info' });
   }
+
   info() {
     this.logger.info('测试INFO', { context: 'S-CORE' });
   }
+
   error() {
     this.logger.error('测试ERROR', { context: 'S-CORE' });
   }
+
   warn() {
     this.logger.warn('测试WARN', { context: 'S-CORE' });
   }
+
   debug() {
     this.logger.debug('测试DEBUG', { context: 'S-CORE', level: 'debug' });
   }
+
   debugLevel() {
     this.logger.debug('测试DEBUG LEVEL', { context: 'S-CORE', level: 'error' });
   }

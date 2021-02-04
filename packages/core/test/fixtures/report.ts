@@ -1,8 +1,8 @@
 import { report } from '../../src/common';
-import { Logger, ILogger } from '../../src/decorator/index';
+import { HLogger, ILogger } from '../../src';
 
 class ReportDemo {
-  @Logger('S-CORE') logger: ILogger;
+  @HLogger('S-CORE') logger: ILogger;
 
   async error() {
     await report('错误上报', {

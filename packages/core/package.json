@@ -8,7 +8,8 @@
     "Serverless-Core"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "http://registry.npmjs.org"
   },
   "license": "MIT",
   "repository": {
@@ -60,5 +61,6 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
-  }
+  },
+  "gitHead": "5c83621635ae4a0fe30173176b163a51107ef3b9"
 }

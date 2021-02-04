@@ -1,8 +1,8 @@
-import { Component } from '../../src/decorator';
+import { HComponent } from '../../src';
 
 
 class ComponentDemo {
-  @Component() component;
+  @HComponent() component;
 
   async deploy() {
     await this.component.load('fc', 'alibaba');

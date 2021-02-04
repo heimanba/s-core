@@ -1,8 +1,7 @@
-import { Logger, ILogger } from '../src/decorator';
+import { HLogger, ILogger } from '../src';
 
 class LoggerDemo {
-  // @ts-ignore
-  @Logger log: ILogger;
+  @HLogger() log: ILogger;
 }
 
 describe('logger.test', () => {
