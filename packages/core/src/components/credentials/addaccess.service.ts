@@ -5,7 +5,7 @@ import {
   providerCollection,
   providerAccessFormat,
   checkProviderList,
-} from './commonAccess';
+} from './constant';
 import path from 'path';
 import os from 'os';
 import inquirer from 'inquirer';
@@ -31,7 +31,7 @@ interface ConfigMap {
   [key: string]: any;
 }
 
-export class AddManager {
+export default class AddManager {
   globalFilePath: string;
   inputFullData: ConfigMap; // 用户输入的inputProviderAlias为键 与 inputSecretID 为值 组成的对象
   protected inputProviderAlias = '';

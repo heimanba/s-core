@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 
-export class GetManager {
+export default class GetManager {
   protected localPath: string = path.join(process.cwd(), '/access.yaml');
   protected globalPath: string = path.join(os.homedir(), '.s/access.yaml');
   protected programArgsLength = 0;

@@ -7,15 +7,10 @@ class CredentialsDemo {
     const input = {
       Args: '',
       State: {},
-      // Credentials: {
-      //   AccountID: '1740298130743624',
-      //   AccessKeyID: 'LTAI4FxEP1GR6Dyx6rGQJyn1',
-      //   AccessKeySecret: 'yVdXr5IjOk5oUunWy0fcGBYJ1kmlCw',
-      // },
       Project: {
         ProjectName: 'ExpressComponent',
         Component: 'express',
-        Provider: 'alibaba',
+        Provider: 'google',
         AccessAlias: 'dankun',
       },
       Properties: {
@@ -38,7 +33,36 @@ class CredentialsDemo {
     };
     this.component.credentials(input);
   }
+  async load() {
+    await this.component.load('fc', 'alibaba');
+  }
+  help() {
+    const sections = [
+      {
+        header: 'A typical app',
+        content: 'Generates something {italic very} important.',
+      },
+      {
+        header: 'Options',
+        optionList: [
+          {
+            name: 'input',
+            typeLabel: '{underline file}',
+            description: 'The input to process.',
+          },
+          {
+            name: 'help',
+            description: 'Print this usage guide.',
+          },
+        ],
+      },
+    ];
+    this.component.help(sections);
+  }
 }
 
 const demo = new CredentialsDemo();
-demo.credentials();
+
+// demo.credentials();
+// demo.load();
+demo.help();
