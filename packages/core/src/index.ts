@@ -3,4 +3,4 @@ export { Component, IComponent } from './components';
 
 export { HLogger, HComponent } from './decorator';
 
-export { request, downloadRequest } from './common';
+export { request, downloadRequest, report, spinner } from './common';
