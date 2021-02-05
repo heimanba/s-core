@@ -63,6 +63,6 @@ class CredentialsDemo {
 
 const demo = new CredentialsDemo();
 
-// demo.credentials();
+demo.credentials();
 // demo.load();
-demo.help();
+// demo.help();

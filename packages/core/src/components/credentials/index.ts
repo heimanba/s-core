@@ -1,21 +1,10 @@
 import inquirer from 'inquirer';
-import GetManager from './getaccess.service';
 import AddManager from './addaccess.service';
+import getAccess from './getaccess.service';
 
 export default async function credential(inputs: any) {
-  if (inputs.Credentials && Object.keys(inputs.Credentials).length > 0) {
-    return inputs.Credentials;
-  }
   const Provider = inputs.Project?.Provider;
-  const configUserInput = {
-    Provider,
-  };
-
-  const getManager = new GetManager();
-  await getManager.initAccessData(configUserInput);
-  const providerMap: {
-    [key: string]: any;
-  } = await getManager.getUserSecretID(configUserInput);
+  const providerMap = getAccess({ Provider });
 
   // 选择
   const selectObject = [];
@@ -52,12 +41,9 @@ export default async function credential(inputs: any) {
   if (access === 'create') {
     const addManager = new AddManager();
     const result = await addManager.inputLengthZero(Provider);
-
-    // 2020-9-23 修复部署过程中增加密钥信息，无法存储到系统的bug
     const inputProviderAlias = `${addManager.provider}.${addManager.aliasName || 'default'}`;
     addManager.inputFullData[inputProviderAlias] = result;
     addManager.writeData(addManager.globalFilePath, addManager.inputFullData);
-
     return result;
   }
   return providerMap[access];

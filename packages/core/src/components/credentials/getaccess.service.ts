@@ -1,93 +1,34 @@
+import fs from 'fs-extra';
 import os from 'os';
-import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 
-export default class GetManager {
-  protected localPath: string = path.join(process.cwd(), '/access.yaml');
-  protected globalPath: string = path.join(os.homedir(), '.s/access.yaml');
-  protected programArgsLength = 0;
-  protected resUserInformation: any = {};
-  protected providerAlias: string;
+interface User {
+  Provider?: string;
+}
 
-  constructor() {
-    if (!fs.existsSync(path.join(process.cwd(), '/access.yaml'))) {
-      this.localPath = path.join(process.cwd(), '/access.yml');
-    }
-
-    if (!fs.existsSync(this.globalPath)) {
-      fs.writeFileSync(this.globalPath, '');
-    }
+export default function getAccess(user: User) {
+  const globalPath = path.join(os.homedir(), '.s/access.yaml');
+  if (!fs.existsSync(`${globalPath}`)) {
+    fs.writeFileSync(globalPath, '');
   }
-
-  async initAccessData(userInput: any) {
-    await this.getManager(userInput, this.localPath);
-    await this.getManager(userInput, this.globalPath);
+  if (!user.Provider) return false;
+  const content = fs.readFileSync(globalPath, 'utf8');
+  let userInfo: { [x: string]: any };
+  try {
+    userInfo = yaml.safeLoad(content);
+  } catch (error) {
+    console.error(error);
   }
-
-  async getManager(userInput: any, filePath: string) {
-    try {
-      let userInformation: any;
-      try {
-        userInformation = yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
-      } catch (ex) {
-        if (filePath === this.globalPath) {
-          fs.writeFileSync(this.globalPath, '');
-        }
+  const data = {};
+  if (userInfo) {
+    const provider = user.Provider.toLocaleLowerCase();
+    Object.keys(userInfo).map((item) => {
+      if (item.split('.')[0] === provider) {
+        data[item] = userInfo[item];
       }
-      if (userInformation !== null) {
-        if (userInput.Provider) {
-          const provider: string = String(userInput.Provider).toLocaleLowerCase();
-          const userInformationKey: string[] = Object.keys(userInformation);
-          if (userInput.AliasName) {
-            const aliasName: string = String(userInput.AliasName).toLocaleLowerCase();
-            this.providerAlias =
-              this.localPath === filePath ? aliasName : `${provider}.${aliasName}`;
-            userInformationKey.forEach((item) => {
-              if (item === this.providerAlias) {
-                this.resUserInformation[this.providerAlias] = userInformation[this.providerAlias];
-              }
-            });
-          } else {
-            userInformationKey.forEach((item) => {
-              if (this.localPath === filePath) {
-                this.resUserInformation[`project.${item}`] = userInformation[item];
-              } else if (item.split('.')[0] === provider) {
-                this.resUserInformation[item] = userInformation[item];
-              }
-            });
-          }
-        } else if (userInput.List) {
-          for (const item in userInformation) {
-            if (filePath === this.localPath) {
-              this.resUserInformation[`project.${item}`] = userInformation[item];
-            } else {
-              this.resUserInformation[item] = userInformation[item];
-            }
-          }
-        }
-      } else if (this.localPath !== filePath) {
-        throw Error('Query failed : User configuration is empty');
-      }
-    } catch (ex) {
-      this.resUserInformation = {};
-    }
+      return item;
+    });
   }
-
-  // 返回单个provider.alias的值
-  async getUserSecretID(userInput: any) {
-    if (this.resUserInformation !== null) {
-      if (userInput.Provider && userInput.AliasName) {
-        return (
-          this.resUserInformation[userInput.AliasName] ||
-          this.resUserInformation[this.providerAlias]
-        );
-      }
-      // await this.initAccessData(userInput)
-      return this.resUserInformation;
-    }
-    throw Error(
-      'Query failed : Please input right format. You can obtain the key information through: s config get -h',
-    );
-  }
+  return data;
 }
