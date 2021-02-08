@@ -1,5 +1,5 @@
 import { HLogger } from '../../src';
-import { Logger } from '../../src/logger';
+// import { Logger } from '../../src/logger';
 
 class LoggerDemo {
   @HLogger('S-CORE') logger;
@@ -52,10 +52,11 @@ class LoggerDemo {
 }
 
 const demo = new LoggerDemo();
-demo.getDebugMsg();
-demo.getInfoMsg();
+demo.log();
+// demo.getDebugMsg();
+// demo.getInfoMsg();
 
-Logger.info('S-CORE', 'dankun');
+// Logger.info('S-CORE', 'dankun');
 // demo.info();
 // demo.error();
 // demo.warn();

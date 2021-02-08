@@ -25,7 +25,7 @@ export interface ILogger {
   error: (...data: any[]) => any;
 }
 
-export const logger = (name: string) => {
+export const logger = (name: string): ILogger => {
   const loggers = new MyLogger(name);
   const args = minimist(process.argv.slice(2));
   loggers.appenders
@@ -45,6 +45,12 @@ export const logger = (name: string) => {
         separator: ',',
       },
     });
+
+  // @ts-ignore
+  loggers.log = (message: any, color?: LogColor) => {
+    return process.stdout.write(`${color ? chalk[color](message) : message}\n`);
+  };
+  // @ts-ignore
   return loggers;
 };
 
