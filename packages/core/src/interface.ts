@@ -1,7 +1,7 @@
 export interface IInputs {
-  properties: any;
+  properties?: any;
   credentials?: any;
-  project: {
+  project?: {
     projectName?: string;
     component?: string;
     provider?: string;
@@ -16,9 +16,9 @@ export interface IInputs {
 }
 
 export interface IV1Inputs {
-  Properties: any;
+  Properties?: any;
   Credentials?: any;
-  Project: {
+  Project?: {
     ProjectName?: string;
     Component?: string;
     Provider?: string;
