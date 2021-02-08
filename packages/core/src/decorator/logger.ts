@@ -1,8 +1,8 @@
-import { Logger as MyLogger, ILogger } from '../logger';
+import { logger } from '../logger';
 
-export const Logger = (context?: string) => (target: any, key: string) => {
+export const Logger = (context: string) => (target: any, key: string) => {
   // @ts-ignore
-  let _val: ILogger = this[key] || new MyLogger(context);
+  let _val = this[key] || logger(context);
 
   const getter = function () {
     return _val;

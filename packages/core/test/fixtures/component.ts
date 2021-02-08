@@ -3,14 +3,14 @@ import { HComponent } from '../../src/decorator';
 class CredentialsDemo {
   @HComponent() component;
 
-  credentials() {
+  async credentials() {
     const input = {
       Args: '',
       State: {},
       Project: {
         ProjectName: 'ExpressComponent',
         Component: 'express',
-        Provider: 'google',
+        Provider: 'alibaba',
         AccessAlias: 'dankun',
       },
       Properties: {
@@ -31,11 +31,13 @@ class CredentialsDemo {
         },
       },
     };
-    this.component.credentials(input);
+    return await this.component.credentials(input);
   }
+
   async load() {
     await this.component.load('fc', 'alibaba');
   }
+
   help() {
     const sections = [
       {
@@ -56,6 +58,23 @@ class CredentialsDemo {
           },
         ],
       },
+      {
+        header: 'Examples',
+        content: [
+          {
+            desc: '1. A concise example. ',
+            example: '$ example -t 100 lib/*.js',
+          },
+          {
+            desc: '2. A long example. ',
+            example: '$ example --timeout 100 --src lib/*.js',
+          },
+          {
+            desc: '3. This example will scan space for unknown things. Take cure when scanning space, it could take some time. ',
+            example: '$ example --src galaxy1.facts galaxy1.facts galaxy2.facts galaxy3.facts galaxy4.facts galaxy5.facts',
+          },
+        ],
+      },
     ];
     this.component.help(sections);
   }
@@ -63,6 +82,6 @@ class CredentialsDemo {
 
 const demo = new CredentialsDemo();
 
-demo.credentials();
+// demo.credentials().then(console.log);
 // demo.load();
-// demo.help();
+demo.help();

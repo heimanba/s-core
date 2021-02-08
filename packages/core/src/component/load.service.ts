@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { getComponentVersion, getComponentDownloadUrl, execComponentDownload } from './services';
+import { getComponentVersion, getComponentDownloadUrl, execComponentDownload } from './utils';
 import { IComponentParams } from '../interface';
 import { Logger } from '../logger/index';
 
@@ -50,17 +50,32 @@ export const installDependency = async (
 ) => {
   const existPackageJson = fs.existsSync(path.join(componentPath, 'package.json'));
   const existNodeModules = fs.existsSync(path.join(componentPath, 'node_modules'));
-  if (existPackageJson && !existNodeModules) {
-    Logger.log('Installing dependencies in serverless-devs core ...');
-    const result = spawnSync('npm install --production --registry=https://registry.npm.taobao.org', [], {
-      cwd: componentPath,
-      stdio: 'inherit',
-      shell: true,
-    });
-    if (result && result.status !== 0) {
-      throw Error('> Execute Error');
+  if (existPackageJson) {
+    if (!existNodeModules) {
+      Logger.log('Installing dependencies in serverless-devs core ...');
+      const result = await spawnSync('npm install --production --registry=https://registry.npm.taobao.org', [], {
+        cwd: componentPath,
+        stdio: 'inherit',
+        shell: true,
+      });
+      if (result && result.status !== 0) {
+        throw Error('> Execute Error');
+      }
+    } else {
+      //  TODO:
+      // await spawnSync('npm run preinstall', [], {
+      //   cwd: componentPath,
+      //   stdio: 'inherit',
+      //   shell: true,
+      // });
+      // await spawnSync('npm run postinstall', [], {
+      //   cwd: componentPath,
+      //   stdio: 'inherit',
+      //   shell: true,
+      // });
     }
   }
+
   await fs.writeFileSync(lockPath, `${name}-${componentVersion}`);
 };
 

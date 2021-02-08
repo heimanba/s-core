@@ -1,4 +1,4 @@
-import { Component as MyComponent } from '../components';
+import { Component as MyComponent } from '../component';
 
 export const Component = () => (target: any, key: string) => {
   // @ts-ignore

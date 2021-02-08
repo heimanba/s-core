@@ -21,7 +21,7 @@
   },
   "homepage": "https://www.serverless-devs.com",
   "scripts": {
-    "debug": " ts-node test/fixtures/spinner.ts",
+    "debug": "ts-node test/fixtures/spinner.ts",
     "test": "npx jest",
     "build": "npx tsc -w",
     "test:cov": "jest --coverage",
@@ -34,12 +34,14 @@
     "@b-mamba/s-progress-bar": "^0.0.3",
     "@serverless-devs/s-progress-bar": "^0.0.2",
     "@serverless-devs/s-zip": "0.0.8",
+    "@tsed/logger": "^5.5.5",
     "chalk": "^4.1.0",
     "command-line-usage": "^6.1.1",
     "download": "^8.0.0",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "js-yaml": "^3.14.0",
+    "minimist": "^1.2.5",
     "ora": "^5.3.0",
     "uid": "^2.0.0"
   },

@@ -9,25 +9,27 @@ import {
 } from './load.service';
 import credentials from './credentials';
 import commandLineUsage, { Section } from 'command-line-usage';
+import { IInputs, IV1Inputs } from '../interface';
+import { Logger } from '../logger';
+import minimist from 'minimist';
 
-export interface IComponent {
+export declare class IComponent {
   load: (name: string, provider: string) => Promise<any>;
+  credentials: (inputs: IInputs | IV1Inputs) => Promise<any>;
+  help: (inputs: IInputs | IV1Inputs) => null;
+  args: (inputs: IInputs | IV1Inputs, opts: object) => object;
 }
 
 export class Component {
-  private getBaseArgs(name: string, provider: string) {
-    const [componentName, version] = name.split('@');
-    return { name: componentName, version, provider };
-  }
-
   /**
    * @description 主要的方法，用于load组件。
    * 组件会下载到 ~/.s/components 目录下面
    * name: 组件名, 默认load最新版本组件，支持load某个版本组件 load@0.11
    * provider: SERVERLESS厂商
    */
-  async load(name: string, provider: string) {
-    const baseArgs = this.getBaseArgs(name, provider);
+  async load(componentName: string, provider: string) {
+    const [name, version] = componentName.split('@');
+    const baseArgs = { name, version, provider };
     const componentPaths: IComponentPath = await generateComponentPath(
       baseArgs,
       S_ROOT_HOME_COMPONENT,
@@ -40,11 +42,23 @@ export class Component {
     }
     return await buildComponentInstance(componentPath);
   }
-  credentials(inputs: any) {
-    credentials(inputs);
+
+  async credentials(inputs: IInputs | IV1Inputs) {
+    return await credentials(inputs);
   }
+
+  args(inputs: IInputs | IV1Inputs, opts = {}) {
+    // @ts-ignore
+    const argsStr = inputs?.args || inputs?.Args;
+    if (!argsStr) {
+      return {};
+    }
+    return minimist(argsStr.split(/[\s]+/g), opts);
+  }
+
+
   help(sections: Section) {
     const usage = commandLineUsage(sections);
-    console.log(usage);
+    Logger.log(usage);
   }
 }

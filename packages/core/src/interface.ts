@@ -1,29 +1,35 @@
-export interface IInputsCredentials {
-  AccountID?: string;
-  AccessKeyID?: string;
-  AccessKeySecret?: string;
+export interface IInputs {
+  properties: any;
+  credentials?: any;
+  project: {
+    projectName?: string;
+    component?: string;
+    provider?: string;
+    accessAlias?: string;
+  };
+  command?: string;
+  args?: string;
+  state?: object;
+  path?: {
+    configPath?: string;
+  };
 }
 
-export interface IInputsProject {
-  ProjectName?: string;
-  Component?: string;
-  Provider?: string;
-  AccessAlias?: string;
-}
-
-export interface IInputsProperties {
-  Region?: string;
-  Function?: any;
-  Service?: any;
-}
-
-export interface iInputs {
-  Properties: IInputsProperties;
-  Credentials?: IInputsCredentials | object;
-  Project: IInputsProject;
+export interface IV1Inputs {
+  Properties: any;
+  Credentials?: any;
+  Project: {
+    ProjectName?: string;
+    Component?: string;
+    Provider?: string;
+    AccessAlias?: string;
+  };
   Command?: string;
   Args?: string;
   State?: object;
+  Path?: {
+    ConfigPath?: string;
+  };
 }
 
 export interface IComponentParams {
@@ -32,11 +38,3 @@ export interface IComponentParams {
   type?: string;
   version?: string;
 }
-
-// export interface LoggerOptions {
-//   context?: string;
-//   level?: string; // info
-//   trace?: string;
-//   isTimeDiffEnabled?: boolean;
-// }
-

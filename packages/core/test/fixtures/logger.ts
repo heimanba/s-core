@@ -1,10 +1,11 @@
 import { HLogger } from '../../src';
+import { Logger } from '../../src/logger';
 
 class LoggerDemo {
   @HLogger('S-CORE') logger;
 
   getDefaultLog() {
-    this.logger.info('abct');
+    this.logger.info('abc');
   }
 
   getDefaultLogObect() {
@@ -13,7 +14,7 @@ class LoggerDemo {
   }
 
   getDefaultLogWithContext() {
-    this.logger.info('abct', { context: 'S-CORE', level: 'info' });
+    this.logger.info('abct', { context: 'S-CORE', logLevel: 'info' });
   }
 
   info() {
@@ -29,26 +30,39 @@ class LoggerDemo {
   }
 
   debug() {
-    this.logger.debug('测试DEBUG', { context: 'S-CORE', level: 'debug' });
+    this.logger.debug('测试DEBUG', { context: 'S-CORE' });
   }
 
   debugLevel() {
-    this.logger.debug('测试DEBUG LEVEL', { context: 'S-CORE', level: 'error' });
+    this.logger.debug('测试DEBUG logLevel', { context: 'S-CORE', logLevel: 'debug' });
   }
 
   log() {
-    this.logger.log('开始执行..,');
+    this.logger.log('开始执行...');
     this.logger.log('执行成功', 'green');
+  }
+
+  getDebugMsg() {
+    this.logger.debug('debug message');
+  }
+
+  getInfoMsg() {
+    this.logger.info('info message');
   }
 }
 
 const demo = new LoggerDemo();
+demo.getDebugMsg();
+demo.getInfoMsg();
+
+Logger.info('S-CORE', 'dankun');
 // demo.info();
 // demo.error();
 // demo.warn();
 // demo.debug();
 // demo.debugLevel();
-demo.log();
+// demo.getDefaultLog();
+// demo.log();
 // demo.getDefaultLog();
 // demo.getDefaultLogWithContext();
 // demo.error();

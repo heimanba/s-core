@@ -1,9 +1,9 @@
 import inquirer from 'inquirer';
-import AddManager from './addaccess.service';
-import getAccess from './getaccess.service';
+import AddManager from './add-access.service';
+import getAccess from './get-access.service';
 
 export default async function credential(inputs: any) {
-  const Provider = inputs.Project?.Provider;
+  const Provider = inputs.Project?.Provider || inputs.project?.provider;
   const providerMap = getAccess({ Provider });
 
   // 选择
@@ -12,7 +12,7 @@ export default async function credential(inputs: any) {
     const temp = {
       name: item.startsWith('project')
         ? `${item.replace('project.', 'project: ')}`
-        : `${item.replace(Provider + '.', Provider + ': ')}`,
+        : `${item.replace(`${Provider }.`, `${Provider }: `)}`,
       value: item,
     };
     if (Provider) {

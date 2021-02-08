@@ -1,26 +1,7 @@
-import { isObject } from '../libs/utils';
+import { Logger as MyLogger } from '@tsed/logger';
 import chalk from 'chalk';
-import { printMessage, printStackTrace } from './logger.service';
-
-export type LogLevel = 'info' | 'debug' | 'warn' | 'error' | 'log';
-
-export interface ILogger {
-  // 打印
-  log: (message: any, color?: LogColor) => any;
-  // 当成日志
-  info: (message: any, options?: LoggerOptions) => any;
-  debug: (message: any, options?: LoggerOptions) => any;
-  warn: (message: any, options?: LoggerOptions) => any;
-  error: (message: any, options?: LoggerOptions) => any;
-}
-
-interface LoggerOptions {
-  context?: string;
-  level?: 'info' | 'debug' | 'warn' | 'error';
-  trace?: string;
-}
-
-type IInstanceLogger = ILogger;
+import { S_CURRENT_HOME } from '../libs/common';
+import minimist from 'minimist';
 
 type LogColor =
   | 'black'
@@ -33,89 +14,64 @@ type LogColor =
   | 'white'
   | 'whiteBright'
   | 'gray';
-export class Logger implements ILogger {
-  protected static instance?: typeof Logger | IInstanceLogger = Logger;
 
-  static overrideLogger(logger: ILogger | boolean) {
-    this.instance = isObject(logger) ? (logger as ILogger) : undefined;
-  }
+export interface ILogger {
+  // 打印
+  log: (message: any, color?: LogColor) => any;
+  // 当成日志
+  info: (...data: any[]) => any;
+  debug: (...data: any[]) => any;
+  warn: (...data: any[]) => any;
+  error: (...data: any[]) => any;
+}
 
+export const logger = (name: string) => {
+  const loggers = new MyLogger(name);
+  const args = minimist(process.argv.slice(2));
+  loggers.appenders
+    .set('std-log', {
+      type: 'stdout',
+      layout: { type: 'colored' },
+      level: (args.debug ? ['debug'] : []).concat(['info', 'warn', 'error', 'fatal']),
+    })
+    .set('all-log-file', {
+      type: 'file',
+      filename: `${S_CURRENT_HOME}/logs/${name}/app.log`,
+      level: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
+      pattern: '.yyyy-MM-dd',
+      maxLogSize: 5,
+      layout: {
+        type: 'json',
+        separator: ',',
+      },
+    });
+  return loggers;
+};
+
+export class Logger {
   static log(message: any, color?: LogColor) {
     return process.stdout.write(`${color ? chalk[color](message) : message}\n`);
   }
 
-  static info(message: any, options: LoggerOptions = {}) {
-    const { context, level } = options;
-    printMessage({ lable: 'info', level, message, color: chalk.green, context });
+  static debug(name: string, data) {
+    const Loggers = logger(name);
+    Loggers.debug(data);
   }
 
-  static error(message: any, options: LoggerOptions = {}) {
-    const { context, trace, level } = options;
-    printMessage({
-      lable: 'error',
-      level,
-      message,
-      color: chalk.red,
-      context,
-      writeStreamType: 'stderr',
-    });
-    printStackTrace(trace);
+  static info(name: string, data) {
+    const Loggers = logger(name);
+    Loggers.info(data);
   }
 
-  static warn(message: any, options: LoggerOptions = {}) {
-    const { context, level } = options;
-    printMessage({ lable: 'warn', level, message, color: chalk.yellowBright, context });
+  static warn(name: string, data) {
+    const Loggers = logger(name);
+    Loggers.warn(data);
   }
 
-  static debug(message: any, options: LoggerOptions = {}) {
-    const { context, level } = options;
-    printMessage({ lable: 'debug', level, message, color: chalk.magentaBright, context });
-  }
-
-  constructor(protected context?: string) {
-    this.setContext(context);
-  }
-
-  log(message: any, color: LogColor) {
-    this.callFunction('log', message, color);
-  }
-
-  info(message: any, options: LoggerOptions = {}) {
-    this.callFunction('info', message, options);
-  }
-
-  debug(message: any, options: LoggerOptions = {}) {
-    this.callFunction('debug', message, options);
-  }
-
-  warn(message: any, options: LoggerOptions = {}) {
-    this.callFunction('warn', message, options);
-  }
-
-  error(message: any, options: LoggerOptions = {}) {
-    this.callFunction('error', message, options);
-  }
-
-  setContext(context: string) {
-    this.context = context;
-  }
-
-  protected getInstance(): typeof Logger | ILogger {
-    const { instance } = Logger;
-    return instance === this ? Logger : instance;
-  }
-
-  private callFunction(name: LogLevel, message: any, options: LoggerOptions | LogColor) {
-    const instance = this.getInstance();
-    const func = instance && (instance as typeof Logger)[name];
-    func &&
-      func.call(
-        instance,
-        message,
-        Object.assign(options || {}, {
-          // @ts-ignore
-          context: options.context || this.context,
-        }),
-      );
+  static error(name: string, data) {
+    const Loggers = logger(name);
+    Loggers.error(data);
   }
 }
+
+// refer https://logger.tsed.io/getting-started.html#installation
