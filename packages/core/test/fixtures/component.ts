@@ -78,10 +78,16 @@ class CredentialsDemo {
     ];
     this.component.help(sections);
   }
+
+  args() {
+    return this.component.args({
+      args: '-x 3 -y 4 -n5 -abc --beep=boop foo bar baz',
+    });
+  }
 }
 
 const demo = new CredentialsDemo();
 
 // demo.credentials().then(console.log);
-// demo.load();
 demo.help();
+// console.log(demo.args());

@@ -47,13 +47,16 @@ export class Component {
     return await credentials(inputs);
   }
 
-  args(inputs: IInputs | IV1Inputs, opts?: object) {
+  args(inputs: IInputs | IV1Inputs, opts?: object): { rawData?: string; data: object } {
     // @ts-ignore
     const argsStr = inputs?.args || inputs?.Args;
     if (!argsStr) {
-      return {};
+      return { rawData: argsStr, data: undefined };
     }
-    return minimist(argsStr.split(/[\s]+/g), opts || {});
+    return {
+      rawData: argsStr,
+      data: minimist(argsStr.split(/[\s]+/g), opts || {}),
+    };
   }
 
 
