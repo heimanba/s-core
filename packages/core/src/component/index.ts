@@ -17,7 +17,7 @@ export declare class IComponent {
   load: (name: string, provider: string) => Promise<any>;
   credentials: (inputs: IInputs | IV1Inputs) => Promise<any>;
   help: (inputs: IInputs | IV1Inputs) => null;
-  args: (inputs: IInputs | IV1Inputs, opts: object) => object;
+  args: (inputs: IInputs | IV1Inputs, opts?: object) => { rawData?: string; data: object };
 }
 
 export class Component {

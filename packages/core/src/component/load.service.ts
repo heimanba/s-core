@@ -49,30 +49,15 @@ export const installDependency = async (
   { componentPath, componentVersion, lockPath }: IComponentPath,
 ) => {
   const existPackageJson = fs.existsSync(path.join(componentPath, 'package.json'));
-  const existNodeModules = fs.existsSync(path.join(componentPath, 'node_modules'));
   if (existPackageJson) {
-    if (!existNodeModules) {
-      Logger.log('Installing dependencies in serverless-devs core ...');
-      const result = await spawnSync('npm install --production --registry=https://registry.npm.taobao.org', [], {
-        cwd: componentPath,
-        stdio: 'inherit',
-        shell: true,
-      });
-      if (result && result.status !== 0) {
-        throw Error('> Execute Error');
-      }
-    } else {
-      //  TODO:
-      // await spawnSync('npm run preinstall', [], {
-      //   cwd: componentPath,
-      //   stdio: 'inherit',
-      //   shell: true,
-      // });
-      // await spawnSync('npm run postinstall', [], {
-      //   cwd: componentPath,
-      //   stdio: 'inherit',
-      //   shell: true,
-      // });
+    Logger.log('Installing dependencies in serverless-devs core ...');
+    const result = await spawnSync('npm install --production --registry=https://registry.npm.taobao.org', [], {
+      cwd: componentPath,
+      stdio: 'inherit',
+      shell: true,
+    });
+    if (result && result.status !== 0) {
+      throw Error('> Execute Error');
     }
   }
 
