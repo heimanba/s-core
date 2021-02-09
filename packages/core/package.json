@@ -23,7 +23,7 @@
   "scripts": {
     "debug": "ts-node test/fixtures/spinner.ts",
     "test": "npx jest",
-    "build": "npx tsc -w",
+    "build": "npx tsc",
     "test:cov": "jest --coverage",
     "lint": "npm run typecheck && f2elint scan -i src",
     "fix": "f2elint fix",
