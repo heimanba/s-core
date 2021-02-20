@@ -2,16 +2,15 @@ import { providerArray, providerObject, providerCollection, checkProviderList } 
 import inquirer from 'inquirer';
 import fs from 'fs';
 import yaml from 'js-yaml';
-
 interface ConfigMap {
   [key: string]: any;
 }
 
 export default class AddManager {
-  protected inputProviderAlias = '';
-  protected inputSecretID: any;
   provider: string;
   aliasName: string;
+  protected inputProviderAlias = '';
+  protected inputSecretID: object = {};
 
   output() {
     console.log('');
@@ -26,12 +25,40 @@ export default class AddManager {
     console.log('');
   }
 
+  async handleCustom() {
+    const option = {
+      type: 'list',
+      name: 'name',
+      message: 'Please select a type:',
+      choices: [
+        { name: '添加键值对', value: 'add' },
+        { name: '结束添加键值对', value: 'over' },
+      ],
+    };
+    const { name } = await inquirer.prompt(option);
+    if (name === 'add') {
+      const { key, value } = await inquirer.prompt([
+        {
+          type: 'input',
+          message: '请输入key',
+          name: 'key',
+        },
+        {
+          type: 'input',
+          message: '请输入value',
+          name: 'value',
+        },
+      ]);
+      this.inputSecretID[key] = value;
+      await this.handleCustom();
+    }
+  }
+
   // 用户输入参数为0的时候
   async inputLengthZero(provider: any = undefined) {
     if (!provider) {
-      await inquirer.prompt(checkProviderList).then((answers: any) => {
-        this.provider = answers.provider;
-      });
+      const answers: any = await inquirer.prompt(checkProviderList);
+      this.provider = answers.provider;
     } else {
       this.provider = provider.toLocaleLowerCase();
     }
@@ -41,26 +68,29 @@ export default class AddManager {
         `The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent/custom]`,
       );
     }
-    const promptList = providerCollection[this.provider];
-    promptList.push({
+
+    const aliasNameObj = {
       type: 'input',
       message: 'Please create alias for key pair. If not, please enter to skip',
       name: 'aliasName',
       default: 'default', // 默认值
-    });
-
-    await inquirer.prompt(promptList).then((answers: any) => {
-      this.inputSecretID = answers;
-    });
-
-    Object.keys(this.inputSecretID).forEach((item) => {
-      if (item === 'aliasName') {
-        this.aliasName = this.inputSecretID[item];
-        delete this.inputSecretID[item];
-      }
-    });
-    this.inputProviderAlias = this.provider + '.' + this.aliasName || 'default';
-
+    };
+    if (this.provider === 'custom') {
+      await this.handleCustom();
+      const { aliasName } = await inquirer.prompt(aliasNameObj);
+      this.aliasName = aliasName;
+    } else {
+      const promptList = providerCollection[this.provider];
+      promptList.push(aliasNameObj);
+      this.inputSecretID = await inquirer.prompt(promptList);
+      Object.keys(this.inputSecretID).forEach((item) => {
+        if (item === 'aliasName') {
+          this.aliasName = this.inputSecretID[item];
+          delete this.inputSecretID[item];
+        }
+      });
+    }
+    this.inputProviderAlias = `${this.provider}.${this.aliasName || 'default'}`;
     return this.inputSecretID;
   }
 

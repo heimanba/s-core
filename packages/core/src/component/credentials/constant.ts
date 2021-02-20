@@ -19,6 +19,7 @@ export const providerObject: any = {
   azure: 'Azure Cloud',
   google: 'Google Cloud',
   tencent: 'Tencent Cloud',
+  custom: 'Custom',
 };
 
 export const providerCollection: any = {
