@@ -1,87 +1,17 @@
-import * as program from 'commander';
-import {
-  providerArray,
-  providerObject,
-  providerCollection,
-  providerAccessFormat,
-  checkProviderList,
-} from './constant';
-import path from 'path';
-import os from 'os';
+import { providerArray, providerObject, providerCollection, checkProviderList } from './constant';
 import inquirer from 'inquirer';
 import fs from 'fs';
 import yaml from 'js-yaml';
-
-function isEqualArray(rightFormat: string[], inputFormat: string[]): boolean {
-  if (!(rightFormat || inputFormat)) {
-    return false;
-  }
-  if (rightFormat.length !== inputFormat.length) {
-    return false;
-  }
-  rightFormat.forEach((item) => {
-    if (!inputFormat.includes(item)) {
-      return false;
-    }
-  });
-  return true;
-}
 
 interface ConfigMap {
   [key: string]: any;
 }
 
 export default class AddManager {
-  globalFilePath: string;
-  inputFullData: ConfigMap; // 用户输入的inputProviderAlias为键 与 inputSecretID 为值 组成的对象
   protected inputProviderAlias = '';
   protected inputSecretID: any;
   provider: string;
   aliasName: string;
-  protected promptList: any[];
-  protected isRightFormat = true;
-  protected context: string[];
-  constructor() {
-    this.globalFilePath = path.join(os.homedir(), '.s/access.yaml');
-    this.inputFullData = {};
-    this.context = program.args;
-  }
-
-  async init(inputProviderAndAlisName: any, inputSecretCheck: any) {
-    if (program.args.length > 0) {
-      throw Error('Configuration failed');
-    } else if (inputProviderAndAlisName.Provider) {
-      this.provider = String(inputProviderAndAlisName.Provider).toLocaleLowerCase();
-      this.aliasName = String(inputProviderAndAlisName.AliasName || 'default').toLocaleLowerCase();
-      if (providerArray.indexOf(this.provider) === -1) {
-        throw Error(
-          `The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent]`,
-        );
-      }
-
-      this.inputSecretID = {};
-      // 用户输入的秘钥对象的key
-      const inputSecretCheckKeys: string[] = Object.keys(inputSecretCheck);
-
-      //  正确秘钥形式
-      const providerAccessFormatSecret: string[] = providerAccessFormat[this.provider];
-      //  检查用户输入的秘钥的格式与对应云厂商的格式是否相同
-      if (isEqualArray(providerAccessFormatSecret, inputSecretCheckKeys)) {
-        for (const item of inputSecretCheckKeys) {
-          this.inputSecretID[item] = inputSecretCheck[item];
-        }
-      } else {
-        throw new Error(`Please Input Right Secret Format: [${providerAccessFormatSecret}]`);
-      }
-    } else {
-      await this.inputLengthZero();
-    }
-
-    await this.checkInputSecretID();
-    this.inputProviderAlias = `${this.provider}.${this.aliasName || 'default'}`;
-    this.inputFullData[this.inputProviderAlias] = this.inputSecretID;
-    this.writeData(this.globalFilePath, this.inputFullData);
-  }
 
   output() {
     console.log('');
@@ -108,26 +38,18 @@ export default class AddManager {
 
     if (!providerArray.includes(this.provider)) {
       throw Error(
-        `The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent]`,
+        `The cloud vendor[${this.provider}] was not found. [alibaba/aws/azure/baidu/google/huawei/tencent/custom]`,
       );
     }
+    const promptList = providerCollection[this.provider];
+    promptList.push({
+      type: 'input',
+      message: 'Please create alias for key pair. If not, please enter to skip',
+      name: 'aliasName',
+      default: 'default', // 默认值
+    });
 
-    try {
-      Object.keys(providerCollection).forEach((item) => {
-        if (item === this.provider) {
-          this.promptList = providerCollection[item];
-        }
-      });
-      this.promptList.push({
-        type: 'input',
-        message: 'Please create alias for key pair. If not, please enter to skip',
-        name: 'aliasName',
-        default: 'default', // 默认值
-      });
-    } catch (err) {
-      throw Error(err.message);
-    }
-    await inquirer.prompt(this.promptList).then((answers: any) => {
+    await inquirer.prompt(promptList).then((answers: any) => {
       this.inputSecretID = answers;
     });
 
@@ -138,18 +60,8 @@ export default class AddManager {
       }
     });
     this.inputProviderAlias = this.provider + '.' + this.aliasName || 'default';
-    return this.inputSecretID;
-  }
 
-  // 检查用户输入的输入的inputSecretID是否为空值
-  async checkInputSecretID() {
-    // eslint-disable-next-line guard-for-in
-    for (const item in this.inputSecretID) {
-      const isTrue: boolean = String(typeof this.inputSecretID[item]) === 'string';
-      if (!this.inputSecretID[item] || !isTrue) {
-        throw Error(`The Provider[${providerObject[this.provider]}]: key[${item}] is required.`);
-      }
-    }
+    return this.inputSecretID;
   }
 
   async writeFileWay(filePath: string, text: ConfigMap) {

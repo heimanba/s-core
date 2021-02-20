@@ -1,6 +1,8 @@
 import inquirer from 'inquirer';
 import AddManager from './add-access.service';
 import getAccess from './get-access.service';
+import path from 'path';
+import os from 'os';
 
 export default async function credential(inputs: any) {
   const Provider = inputs.Project?.Provider || inputs.project?.provider;
@@ -12,7 +14,7 @@ export default async function credential(inputs: any) {
     const temp = {
       name: item.startsWith('project')
         ? `${item.replace('project.', 'project: ')}`
-        : `${item.replace(`${Provider }.`, `${Provider }: `)}`,
+        : `${item.replace(`${Provider}.`, `${Provider}: `)}`,
       value: item,
     };
     if (Provider) {
@@ -42,8 +44,9 @@ export default async function credential(inputs: any) {
     const addManager = new AddManager();
     const result = await addManager.inputLengthZero(Provider);
     const inputProviderAlias = `${addManager.provider}.${addManager.aliasName || 'default'}`;
-    addManager.inputFullData[inputProviderAlias] = result;
-    addManager.writeData(addManager.globalFilePath, addManager.inputFullData);
+    addManager.writeData(path.join(os.homedir(), '.s/access.yaml'), {
+      [inputProviderAlias]: result,
+    });
     return result;
   }
   return providerMap[access];

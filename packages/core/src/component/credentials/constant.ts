@@ -8,6 +8,7 @@ export const providerArray: string[] = [
   'azure',
   'google',
   'tencent',
+  'custom',
 ];
 
 export const providerObject: any = {
@@ -149,16 +150,6 @@ export const providerCollection: any = {
   ],
 };
 
-export const providerAccessFormat: any = {
-  alibaba: ['AccountID', 'AccessKeyID', 'AccessKeySecret'],
-  aws: ['AccessKeyID', 'SecretAccessKey'],
-  baidu: ['AccessKeyID', 'SecretAccessKey'],
-  huawei: ['AccessKeyID', 'SecretAccessKey'],
-  azure: ['KeyVaultName', 'TenantID', 'ClientID', 'ClientSecret'],
-  tencent: ['AccountID', 'SecretID', 'SecretKey'],
-  google: ['PrivateKeyData'],
-};
-
 export const checkProviderList: any[] = [
   {
     type: 'list',
@@ -172,6 +163,7 @@ export const checkProviderList: any[] = [
       { name: 'Google Cloud (google)', value: 'google' },
       { name: 'Huawei Cloud (huawei)', value: 'huawei' },
       { name: 'Tencent Cloud (tencent)', value: 'tencent' },
+      { name: 'Custom', value: 'custom' },
     ],
   },
 ];

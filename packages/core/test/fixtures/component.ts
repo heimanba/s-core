@@ -10,7 +10,7 @@ class CredentialsDemo {
       Project: {
         ProjectName: 'ExpressComponent',
         Component: 'express',
-        Provider: 'alibaba',
+        // Provider: 'alibaba',
         AccessAlias: 'dankun',
       },
       Properties: {
@@ -70,8 +70,10 @@ class CredentialsDemo {
             example: '$ example --timeout 100 --src lib/*.js',
           },
           {
-            desc: '3. This example will scan space for unknown things. Take cure when scanning space, it could take some time. ',
-            example: '$ example --src galaxy1.facts galaxy1.facts galaxy2.facts galaxy3.facts galaxy4.facts galaxy5.facts',
+            desc:
+              '3. This example will scan space for unknown things. Take cure when scanning space, it could take some time. ',
+            example:
+              '$ example --src galaxy1.facts galaxy1.facts galaxy2.facts galaxy3.facts galaxy4.facts galaxy5.facts',
           },
         ],
       },
@@ -87,7 +89,7 @@ class CredentialsDemo {
 }
 
 const demo = new CredentialsDemo();
-demo.load();
-// demo.credentials().then(console.log);
+// demo.load();
+demo.credentials();
 // demo.help();
 // console.log(demo.args());
