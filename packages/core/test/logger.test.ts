@@ -1,7 +1,7 @@
 import { HLogger, ILogger } from '../src';
 
 class LoggerDemo {
-  @HLogger() log: ILogger;
+  @HLogger('sss') log: ILogger;
 }
 
 describe('logger.test', () => {

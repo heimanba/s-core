@@ -1,6 +1,6 @@
 import { Logger as MyLogger } from '@tsed/logger';
 import chalk from 'chalk';
-import { S_CURRENT_HOME } from '../libs/common';
+import { S_ROOT_HOME } from '../libs/common';
 import minimist from 'minimist';
 
 type LogColor =
@@ -36,7 +36,7 @@ export const logger = (name: string): ILogger => {
     })
     .set('all-log-file', {
       type: 'file',
-      filename: `${S_CURRENT_HOME}/logs/${name}/app.log`,
+      filename: `${S_ROOT_HOME}/logs/${name}/app.log`,
       level: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
       pattern: '.yyyy-MM-dd',
       maxLogSize: 5,
