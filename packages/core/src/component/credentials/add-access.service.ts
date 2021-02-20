@@ -2,6 +2,8 @@ import { providerArray, providerObject, providerCollection, checkProviderList } 
 import inquirer from 'inquirer';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import i18n from '../../libs/i18n';
+
 interface ConfigMap {
   [key: string]: any;
 }
@@ -31,8 +33,8 @@ export default class AddManager {
       name: 'name',
       message: 'Please select a type:',
       choices: [
-        { name: '添加键值对', value: 'add' },
-        { name: '结束添加键值对', value: 'over' },
+        { name: i18n.__('Add key-value pairs'), value: 'add' },
+        { name: i18n.__('End of adding key-value pairs'), value: 'over' },
       ],
     };
     const { name } = await inquirer.prompt(option);
@@ -40,12 +42,12 @@ export default class AddManager {
       const { key, value } = await inquirer.prompt([
         {
           type: 'input',
-          message: '请输入key',
+          message: i18n.__('Please enter key'),
           name: 'key',
         },
         {
           type: 'input',
-          message: '请输入value',
+          message: i18n.__('Please enter value'),
           name: 'value',
         },
       ]);

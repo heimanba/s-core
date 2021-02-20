@@ -6,7 +6,7 @@ import spinner from './spinner';
 import { Logger } from '../logger';
 import decompress from 'decompress';
 import fs from 'fs-extra';
-
+import i18n from '../libs/i18n';
 
 interface HintOptions {
   loading?: string;
@@ -98,9 +98,9 @@ export async function downloadRequest(url, dest, options?: MyDownloadOptions) {
   if (extract) {
     const files = fs.readdirSync(dest);
     const filename = files.find((item) => url.includes(item));
-    const vm = spinner('文件解压中...');
+    const vm = spinner(i18n.__('File unzipping...'));
     await decompress(`${dest}/${filename}`, dest, { strip });
     await fs.unlink(`${dest}/${filename}`);
-    vm.succeed('文件解压完成');
+    vm.succeed(i18n.__('File decompression completed'));
   }
 }
