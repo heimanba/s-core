@@ -90,65 +90,65 @@ async function zipFolder(zipArchiver, folder, folders, funignore, codeUri, prefi
   const dir = path.join(...folders);
   const dirItems = await fs.readdir(dir);
 
-  return (
-    await Promise.all(
-      dirItems.map(async (f) => {
-        const fPath = path.join(dir, f);
+  const pmaps: Array<number> = await Promise.all(
+    dirItems.map(async (f) => {
+      const fPath = path.join(dir, f);
 
-        let s;
+      let s;
 
-        try {
-          s = await fs.lstat(fPath);
-        } catch (error) {
-          console.log(
-            `Before zip: could not found fPath ${fPath}, absolute fPath is ${path.resolve(
-              fPath,
-            )}, exception is ${error}, skiping`,
-          );
-          return 0;
-        }
-
-        // TODO we need to ignore .s directory, but dont want to show redundant log.
-        // find a better way to handle this log problem
-        if (funignore && funignore(fPath)) {
-          console.log('file %s is ignored.', fPath);
-          return 0;
-        }
-
-        const absFilePath = path.resolve(fPath);
-        const relative = path.relative(absCodeUri, absFilePath);
-
-        const isBootstrap = isBootstrapPath(absFilePath, absCodeUri, false);
-        if (s.size === 1067) {
-          const content: any = await readLines(fPath);
-          if (content[0] === 'XSym' && content.length === 5) {
-            const target = content[3];
-            zipArchiver.symlink(relative, target, {
-              mode: isBootstrap || isWindows ? s.mode | 73 : s.mode,
-            });
-            return 1;
-          }
-        }
-
-        if (s.isFile() || s.isSymbolicLink()) {
-          zipArchiver.file(fPath, {
-            name: relative,
-            prefix,
-            mode: isBootstrap || isWindows ? s.mode | 73 : s.mode,
-            stats: s, // The archiver uses fs.stat by default, and pasing the result of lstat to ensure that the symbolic link is properly packaged
-          });
-
-          return 1;
-        } else if (s.isDirectory()) {
-          return await zipFolder(zipArchiver, f, folders.slice(), funignore, codeUri, prefix);
-        }
-        console.error(
-          `Ignore file ${absFilePath}, because it isn't a file, symbolic link or directory`,
+      try {
+        s = await fs.lstat(fPath);
+      } catch (error) {
+        console.log(
+          `Before zip: could not found fPath ${fPath}, absolute fPath is ${path.resolve(
+            fPath,
+          )}, exception is ${error}, skiping`,
         );
         return 0;
-      }),
-    )
-  ).reduce((sum: number, curr: number) => sum + curr, 0);
+      }
+
+      // TODO we need to ignore .s directory, but dont want to show redundant log.
+      // find a better way to handle this log problem
+      if (funignore && funignore(fPath)) {
+        console.log('file %s is ignored.', fPath);
+        return 0;
+      }
+
+      const absFilePath = path.resolve(fPath);
+      const relative = path.relative(absCodeUri, absFilePath);
+
+      const isBootstrap = isBootstrapPath(absFilePath, absCodeUri, false);
+      if (s.size === 1067) {
+        const content: any = await readLines(fPath);
+        if (content[0] === 'XSym' && content.length === 5) {
+          const target = content[3];
+          zipArchiver.symlink(relative, target, {
+            mode: isBootstrap || isWindows ? s.mode | 73 : s.mode,
+          });
+          return 1;
+        }
+      }
+
+      if (s.isFile() || s.isSymbolicLink()) {
+        zipArchiver.file(fPath, {
+          name: relative,
+          prefix,
+          mode: isBootstrap || isWindows ? s.mode | 73 : s.mode,
+          stats: s, // The archiver uses fs.stat by default, and pasing the result of lstat to ensure that the symbolic link is properly packaged
+        });
+
+        return 1;
+      } else if (s.isDirectory()) {
+        return await zipFolder(zipArchiver, f, folders.slice(), funignore, codeUri, prefix);
+      }
+      console.error(
+        `Ignore file ${absFilePath}, because it isn't a file, symbolic link or directory`,
+      );
+      return 0;
+    }),
+  );
+
+  return pmaps.reduce((sum: number, curr: number) => sum + curr, 0);
 }
 
 function readLines(fileName) {
