@@ -52,8 +52,8 @@ class LoggerDemo {
 }
 
 const demo = new LoggerDemo();
-demo.log();
-// demo.getDebugMsg();
+// demo.log();
+demo.getDebugMsg();
 // demo.getInfoMsg();
 
 // Logger.info('S-CORE', 'dankun');

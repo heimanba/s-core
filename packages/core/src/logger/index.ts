@@ -1,7 +1,15 @@
 import { Logger as MyLogger } from '@tsed/logger';
 import chalk from 'chalk';
-import { S_ROOT_HOME } from '../libs/common';
+import {
+  S_ROOT_HOME,
+  S_CURRENT_HOME_S,
+  S_CURRENT_HOME_TEMPLATE,
+  S_CURRENT_HOME_PACKAGE,
+} from '../libs/common';
+import { readJsonFile } from '../libs/utils';
 import minimist from 'minimist';
+import fs from 'fs';
+import yaml from 'js-yaml';
 
 type LogColor =
   | 'black'
@@ -28,6 +36,32 @@ export interface ILogger {
 export const logger = (name: string): ILogger => {
   const loggers = new MyLogger(name);
   const args = minimist(process.argv.slice(2));
+  let logName: string;
+  try {
+    const content = yaml.safeLoad(fs.readFileSync(S_CURRENT_HOME_S, 'utf8'));
+    logName = content.name || content.Name;
+  } catch (error) {
+    // ignore exception
+  }
+
+  if (!logName) {
+    try {
+      const content = yaml.safeLoad(fs.readFileSync(S_CURRENT_HOME_TEMPLATE, 'utf8'));
+      logName = content.name || content.Name;
+    } catch (error) {
+      // ignore exception
+    }
+  }
+
+  if (!logName) {
+    try {
+      const content: any = readJsonFile(S_CURRENT_HOME_PACKAGE);
+      logName = content.name;
+    } catch (error) {
+      // ignore exception
+    }
+  }
+
   loggers.appenders
     .set('std-log', {
       type: 'stdout',
@@ -36,7 +70,7 @@ export const logger = (name: string): ILogger => {
     })
     .set('all-log-file', {
       type: 'file',
-      filename: `${S_ROOT_HOME}/logs/${name}/app.log`,
+      filename: `${S_ROOT_HOME}/logs/${logName}/app.log`,
       level: ['trace', 'debug', 'info', 'warn', 'error', 'fatal'],
       pattern: '.yyyy-MM-dd',
       maxLogSize: 5,
