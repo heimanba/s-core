@@ -18,7 +18,7 @@ npm i @serverless-devs/core -S
 
 ## 整体使用方法
 
-1. decorator 使用方式
+1. decorator 使用方式(推荐)
 
 - logger demo
 
@@ -34,7 +34,7 @@ class LoggerDemo {
 }
 ```
 
-![Demo](https://img.alicdn.com/imgextra/i3/O1CN01zkim1w1miYEhErw8y_!!6000000004988-2-tps-1372-44.png)
+![Demo](https://img.alicdn.com/imgextra/i4/O1CN01EiQwKM1JcU8PI6GAz_!!6000000001049-1-tps-1337-112.gif)
 
 - component demo
 
@@ -64,7 +64,7 @@ function loggerDemo() {
 }
 ```
 
-![Demo](https://img.alicdn.com/imgextra/i3/O1CN01zkim1w1miYEhErw8y_!!6000000004988-2-tps-1372-44.png)
+![Demo](https://img.alicdn.com/imgextra/i4/O1CN01EiQwKM1JcU8PI6GAz_!!6000000001049-1-tps-1337-112.gif)
 
 - component demo
 
@@ -80,7 +80,7 @@ async function componentDemo() {
 
 ## 详细文档
 
-[common(request/download/report) ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/common.md)
+[common(request/downloadRequest/report/spinner/zip/unzip) ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/common.md)
 
 [logger ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/loggger.md)
 

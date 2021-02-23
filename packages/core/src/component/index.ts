@@ -59,7 +59,6 @@ export class Component {
     };
   }
 
-
   help(sections: Section) {
     const usage = commandLineUsage(sections);
     Logger.log(usage);

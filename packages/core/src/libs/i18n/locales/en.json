@@ -16,5 +16,9 @@
 	"Tencent Cloud (tencent)": "Tencent Cloud (tencent)",
 	"Custom (custom)": "Custom (custom)",
 	"File unzipping...": "File unzipping...",
-	"File decompression completed": "File decompression completed"
+	"File decompression completed": "File decompression completed",
+	"Add key-value pairs": "Add key-value pairs",
+	"End of adding key-value pairs": "End of adding key-value pairs",
+	"Please enter key": "Please enter key",
+	"Please enter value": "Please enter value"
 }

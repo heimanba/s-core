@@ -10,7 +10,7 @@ class CredentialsDemo {
       Project: {
         ProjectName: 'ExpressComponent',
         Component: 'express',
-        // Provider: 'custom',
+        // Provider: 'alibaba',
         AccessAlias: 'dankun',
       },
       Properties: {
@@ -35,7 +35,7 @@ class CredentialsDemo {
   }
 
   async load() {
-    await this.component.load('fc', 'alibaba');
+    await this.component.load('fc@0.1.2', 'alibaba');
   }
 
   help() {
@@ -89,7 +89,7 @@ class CredentialsDemo {
 }
 
 const demo = new CredentialsDemo();
-demo.load();
-// demo.credentials();
+// demo.load();
+demo.credentials();
 // demo.help();
 // console.log(demo.args());
