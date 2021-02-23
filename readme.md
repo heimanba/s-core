@@ -82,6 +82,6 @@ async function componentDemo() {
 
 [common(request/downloadRequest/report/spinner/zip/unzip) ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/common.md)
 
-[logger ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/loggger.md)
+[logger ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/logger.md)
 
 [component ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/component.md)

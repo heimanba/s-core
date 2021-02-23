@@ -231,7 +231,8 @@ class ComponentDemo {
 ![demo](https://img.alicdn.com/imgextra/i2/O1CN011qZLkF203hWviFAS9_!!6000000006794-1-tps-1337-221.gif)
 
 - Provider 为 alibaba 的 case
-  ![demo](https://img.alicdn.com/imgextra/i2/O1CN01VgcDDQ1xYtf7dmfdQ_!!6000000006456-1-tps-1337-221.gif)
+
+![demo](https://img.alicdn.com/imgextra/i2/O1CN01VgcDDQ1xYtf7dmfdQ_!!6000000006456-1-tps-1337-221.gif)
 
 - Provider 为 custom 的 case
 
