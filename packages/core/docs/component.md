@@ -69,7 +69,7 @@ class ComponentDemo {
 #### args
 
 命令行参数解析工具，用于解析命令行参数。格式为 args(Input, options)
-解析工具采用 minimist(https://github.com/substack/minimist) 详细使用查看文档
+解析工具采用 [minimist](https://github.com/substack/minimist) 详细使用查看[文档](https://github.com/substack/minimist)
 
 ```typescript
 const { Component, IComponent } = require('@serverless-devs/core');

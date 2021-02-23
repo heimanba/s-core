@@ -130,6 +130,6 @@ zip({ codeUri, include, exclude, outputFileName, outputFilePath });
 
 ## unzip
 
-#### 用于解压文件，具体使用[文档](https://github.com/kevva/decompress)
+#### 用于解压文件，具体使用请查看[文档](https://github.com/kevva/decompress)
 
 ![Demo](https://img.alicdn.com/imgextra/i3/O1CN01fypNFP1NkxvharJmk_!!6000000001609-1-tps-1337-112.gif)
