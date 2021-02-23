@@ -7,18 +7,19 @@ class ZipDemo {
       include: ['../spinner.ts'],
       exclude: ['a.md'],
       // exclude: ['dir'],
+      outputFileName: 'provider',
       // exclude: ['./demo/dir'],
       outputFilePath: './zipdist',
     });
   }
   async testUnzip() {
-    await unzip('./zipdist/dome.zip', 'unzip-dist');
+    await unzip('./zipdist/provider.jar', 'unzip-dist');
     console.log('done!');
   }
 }
 
 const demo = new ZipDemo();
 
-// demo.testZip()
+demo.testZip();
 
-demo.testUnzip();
+// demo.testUnzip();

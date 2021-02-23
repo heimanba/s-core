@@ -16,7 +16,14 @@ interface Options {
 }
 
 async function zip(options: Options) {
-  const { codeUri, exclude, include, outputFileName = 'dome.zip', outputFilePath = './' } = options;
+  const { codeUri, exclude, include, outputFileName, outputFilePath = './' } = options;
+
+  let fileName: string;
+  if (outputFileName) {
+    fileName = outputFileName.includes('.') ? outputFileName : `${outputFileName}.zip`;
+  } else {
+    fileName = 'demo.zip';
+  }
 
   await fs.ensureDir(outputFilePath);
 
@@ -29,7 +36,7 @@ async function zip(options: Options) {
     throw new Error(`${codeUri} is file, and Include/Exclude was not provided`);
   }
 
-  const output = fs.createWriteStream(`${outputFilePath}/${outputFileName}`);
+  const output = fs.createWriteStream(`${outputFilePath}/${fileName}`);
   console.log('Packing ...');
 
   const zipArchiver = archiver('zip', {
