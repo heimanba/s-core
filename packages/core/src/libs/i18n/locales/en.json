@@ -14,5 +14,7 @@
 	"Google Cloud (google)": "Google Cloud (google)",
 	"Huawei Cloud (huawei)": "Huawei Cloud (huawei)",
 	"Tencent Cloud (tencent)": "Tencent Cloud (tencent)",
-	"Custom (custom)": "Custom (custom)"
+	"Custom (custom)": "Custom (custom)",
+	"File unzipping...": "File unzipping...",
+	"File decompression completed": "File decompression completed"
 }

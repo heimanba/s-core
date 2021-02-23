@@ -29,10 +29,12 @@ class LoggerDemo {
   @HLogger('S-CORE') logger: ILogger;
 
   getDefaultLog() {
-    this.logger.info('测试');
+    this.logger.info('abc');
   }
 }
 ```
+
+![Demo](https://img.alicdn.com/imgextra/i3/O1CN01zkim1w1miYEhErw8y_!!6000000004988-2-tps-1372-44.png)
 
 - component demo
 
@@ -48,6 +50,8 @@ class ComponentDemo {
 }
 ```
 
+![Demo](https://img.alicdn.com/imgextra/i2/O1CN01odpYZ727xlK1uHeMH_!!6000000007864-1-tps-1337-112.gif)
+
 2. 类使用方式(在纯函数中)
 
 - logger demo
@@ -56,10 +60,11 @@ class ComponentDemo {
 const { Logger } = require('@serverless-devs/core');
 
 function loggerDemo() {
-  Logger.log('abc', 'red');
-  Logger.info('S-CORE', 'dankunTest');
+  Logger.info('S-CORE', 'abc');
 }
 ```
+
+![Demo](https://img.alicdn.com/imgextra/i3/O1CN01zkim1w1miYEhErw8y_!!6000000004988-2-tps-1372-44.png)
 
 - component demo
 
@@ -71,10 +76,12 @@ async function componentDemo() {
 }
 ```
 
+![Demo](https://img.alicdn.com/imgextra/i2/O1CN01odpYZ727xlK1uHeMH_!!6000000007864-1-tps-1337-112.gif)
+
 ## 详细文档
+
+[common(request/download/report) ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/common.md)
 
 [logger ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/loggger.md)
 
 [component ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/component.md)
-
-[common(request/download/report) ](https://github.com/heimanba/s-core/blob/master/packages/core/docs/common.md)

@@ -89,7 +89,7 @@ class CredentialsDemo {
 }
 
 const demo = new CredentialsDemo();
-// demo.load();
-demo.credentials();
+demo.load();
+// demo.credentials();
 // demo.help();
 // console.log(demo.args());

@@ -53,7 +53,7 @@ class LoggerDemo {
 
 const demo = new LoggerDemo();
 // demo.log();
-demo.getDebugMsg();
+// demo.getDebugMsg();
 // demo.getInfoMsg();
 
 // Logger.info('S-CORE', 'dankun');
@@ -62,9 +62,8 @@ demo.getDebugMsg();
 // demo.warn();
 // demo.debug();
 // demo.debugLevel();
-// demo.getDefaultLog();
+demo.getDefaultLog();
 // demo.log();
-// demo.getDefaultLog();
 // demo.getDefaultLogWithContext();
 // demo.error();
 // demo.warn();
@@ -80,3 +79,5 @@ demo.getDebugMsg();
 // }
 //
 // console.log(LogLevelEnum[2]);
+
+// Logger.info('S-CORE', 'abc');
