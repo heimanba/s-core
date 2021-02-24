@@ -13,7 +13,7 @@ import { IInputs, IV1Inputs } from '../interface';
 import { Logger } from '../logger';
 import minimist from 'minimist';
 
-export declare class IComponent {
+export interface IComponent {
   load: (name: string, provider: string) => Promise<any>;
   credentials: (inputs: IInputs | IV1Inputs) => Promise<any>;
   help: (inputs: IInputs | IV1Inputs) => null;
